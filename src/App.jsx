@@ -1,14 +1,18 @@
 import "./App.css";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 import Header from "./layouts/header";
 import NavBar from "./layouts/navbar";
+import Footer from "./layouts/footer";
 function App() {
-  return <div>
-    <Header></Header>
-    <NavBar></NavBar>
-    <Button>Click me</Button>
-  </div>;
+  return (
+    <div>
+      <Header></Header>
+      <NavBar></NavBar>
+      <Footer></Footer>
+      <Button>Click me</Button>
+    </div>
+  );
 }
 
 export default App;
