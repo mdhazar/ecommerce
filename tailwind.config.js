@@ -3,6 +3,9 @@ export default {
   content: ["./src/**/*.{html,js,jsx}"],
   darkMode: ['selector', "class"],
   theme: {
+	fontFamily: {
+        sans: ['Montserrat', 'sans-serif'],  // Use Montserrat for the sans family
+      },
 	container:{center:true, padding:"4rem"},
   	extend: {
   		borderRadius: {

@@ -4,7 +4,7 @@ import { FaPhoneAlt, FaEnvelope, FaInstagram, FaYoutube, FaFacebookF, FaTwitter 
 const Header = () => {
   return (
     
-    <div className="header text-white bg-[#252B42]">
+    <div className="header text-white bg-[#252B42] ">
       <div className="container">
         <div className="flex justify-between items-center p-4">
           
