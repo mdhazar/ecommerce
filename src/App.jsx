@@ -10,7 +10,7 @@ function App() {
       <Header></Header>
       <NavBar></NavBar>
       <Footer></Footer>
-      <Button>Click me</Button>
+      
     </div>
   );
 }

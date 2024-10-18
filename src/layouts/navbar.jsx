@@ -35,12 +35,12 @@ const Navbar = () => {
 
         
         <div className="hidden md:flex space-x-6 text-gray-600">
-          <a href="#" className="hover:text-gray-800">Home</a>
-          <a href="#" className="hover:text-gray-800">Shop <span className="ml-1">&#x25BE;</span></a>
-          <a href="#" className="hover:text-gray-800">About</a>
-          <a href="#" className="hover:text-gray-800">Blog</a>
-          <a href="#" className="hover:text-gray-800">Contact</a>
-          <a href="#" className="hover:text-gray-800">Pages</a>
+          <a href="#" className="">Home</a>
+          <a href="#" className="">Shop <span className="ml-1">&#x25BE;</span></a>
+          <a href="#" className="">About</a>
+          <a href="#" className="">Blog</a>
+          <a href="#" className="">Contact</a>
+          <a href="#" className="">Pages</a>
         </div>
 
         
@@ -66,12 +66,12 @@ const Navbar = () => {
       
       {menuOpen && (
         <div className="md:hidden bg-gray-100 p-4 flex flex-col space-y-4">
-          <a href="#" className="hover:text-gray-800 text-gray-600">Home</a>
-          <a href="#" className="hover:text-gray-800 text-gray-600">Shop <span className="ml-1">&#x25BE;</span></a>
-          <a href="#" className="hover:text-gray-800 text-gray-600">About</a>
-          <a href="#" className="hover:text-gray-800 text-gray-600">Blog</a>
-          <a href="#" className="hover:text-gray-800 text-gray-600">Contact</a>
-          <a href="#" className="hover:text-gray-800 text-gray-600">Pages</a>
+          <a href="#" className=" text-gray-600">Home</a>
+          <a href="#" className=" text-gray-600">Shop <span className="ml-1">&#x25BE;</span></a>
+          <a href="#" className=" text-gray-600">About</a>
+          <a href="#" className=" text-gray-600">Blog</a>
+          <a href="#" className=" text-gray-600">Contact</a>
+          <a href="#" className=" text-gray-600">Pages</a>
           <div className="flex flex-col space-y-4">
             <a href="#" className="flex items-center space-x-1 text-[#1da1f2] ">
               <FaUser />
