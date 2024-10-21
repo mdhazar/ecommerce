@@ -7,6 +7,7 @@ import Footer from "./layouts/footer";
 import NewCollection from "./components/ui/newCollection";
 import ShopCardSection from "./components/ui/shopCardSection";
 import ShopSection from "./components/ui/shopSection";
+import BuySection from "./components/ui/buySection";
  
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <NewCollection></NewCollection>
       <ShopCardSection></ShopCardSection>
       <ShopSection></ShopSection>
+      <BuySection></BuySection>
       <Footer></Footer>
       
     </div>
