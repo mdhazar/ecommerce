@@ -3,7 +3,6 @@ import productSlide1 from "../../assets/productSlide1.jpg";
 const NewCollection = () => {
   return (
     <div className="relative h-screen  flex items-center justify-center text-white">
-      
       <div className="absolute inset-0 z-0">
         <img
           src={productSlide1}
@@ -12,7 +11,6 @@ const NewCollection = () => {
         />
       </div>
 
-     
       <div className="relative z-10 text-center">
         <p className="text-sm uppercase tracking-wider mb-2">Summer 2020</p>
         <h1 className="text-5xl font-bold uppercase mb-4">New Collection</h1>
@@ -24,7 +22,6 @@ const NewCollection = () => {
         </button>
       </div>
 
-     
       <div className="absolute left-5 top-1/2 transform -translate-y-1/2 text-2xl">
         <button className="text-white">&#10094;</button>
       </div>
