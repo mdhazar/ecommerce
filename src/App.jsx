@@ -1,4 +1,9 @@
+import React from "react";
 import "./App.css";
+
+import HomePage from "./pages/HomePage";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
 
 import Header from "./layouts/header";
 import NavBar from "./layouts/navbar";
@@ -9,18 +14,14 @@ import ShopSection from "./components/ui/shopSection";
 import BuySection from "./components/ui/buySection";
 import FeaturedProducts from "./components/ui/featuredProducts";
 
+
 function App() {
   return (
-    <div>
-      <Header></Header>
-      <NavBar></NavBar>
-      <NewCollection></NewCollection>
-      <ShopCardSection></ShopCardSection>
-      <ShopSection></ShopSection>
-      <BuySection></BuySection>
-      <FeaturedProducts></FeaturedProducts>
-      <Footer></Footer>
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+      </Switch>
+    </Router>
   );
 }
 
