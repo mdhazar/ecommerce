@@ -1,5 +1,5 @@
 import React from "react";
-import productCardInfo from "../../assets/productCardInfo.png";
+import productCardInfo from "../../assets/ProductCardInfo.png";
 
 export default function ProductCardInfo() {
   return (
