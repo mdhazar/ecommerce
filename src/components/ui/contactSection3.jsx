@@ -1,13 +1,24 @@
 import React from "react";
 import contactImage from "../../assets/contactSection3a.png";
+import roomImageDesktop from "../../assets/contactSection3b.png";
 
 export default function ContactSection3() {
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${contactImage})` }}
-    >
-      <div className="bg-white  p-8 rounded-lg  text-center max-w-3xl">
+    <div className="relative min-h-screen flex flex-col items-center justify-center">
+      <div
+        className="absolute inset-0 bg-contain bg-center bg-no-repeat hidden lg:block"
+        style={{ backgroundImage: `url(${roomImageDesktop})` }}
+      ></div>
+
+      <div
+        className="absolute inset-0 bg-center bg-no-repeat block lg:hidden"
+        style={{
+          backgroundImage: `url(${contactImage})`,
+          backgroundSize: "100% 100%",
+        }}
+      ></div>
+
+      <div className="relative z-10 text-center max-w-3xl p-8  bg-opacity-80 ">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">CONTACT US</h1>
         <p className="text-gray-600 mb-8">
           Problems trying to resolve the conflict between the two major realms
