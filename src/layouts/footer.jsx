@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className=" bg-white ">
       <div className="">
-        <div className="container bg-[#FAFAFA] flex flex-col md:flex-row justify-between items-center py-6 mb-8 ">
+        <div className="bg-[#FAFAFA] flex flex-col md:flex-row justify-between items-center px-16 py-6 mb-8 ">
           <h1 className="text-3xl font-bold mb-4 md:mb-0">Bandage</h1>
           <div className="flex gap-4">
             <a href="#" className="text-[#23A6F0]">
@@ -142,7 +142,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="px-10 text-[#737373] text-sm py-6 bg-[#FAFAFA]">
+        <div className="px-16 text-[#737373] text-sm py-6 bg-[#FAFAFA]">
           <p>Made With Love By Finland All Right Reserved</p>
         </div>
       </div>

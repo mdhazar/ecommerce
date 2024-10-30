@@ -6,7 +6,7 @@ export default {
     fontFamily: {
       sans: ["Montserrat", "sans-serif"],
     },
-    container: { center: true, padding: "4rem" },
+    container: { center: true, padding: "1rem" },
     extend: {
       borderRadius: {
         lg: "var(--radius)",
