@@ -1,20 +1,25 @@
-import React from 'react';
-import { FaPhoneAlt, FaEnvelope, FaInstagram, FaYoutube, FaFacebookF, FaTwitter } from 'react-icons/fa';
+import React from "react";
+import {
+  FaPhoneAlt,
+  FaEnvelope,
+  FaInstagram,
+  FaYoutube,
+  FaFacebookF,
+  FaTwitter,
+} from "react-icons/fa";
 
 const Header = () => {
   return (
-    
     <div className="header text-white bg-[#252B42] hidden md:block">
       <div className="container">
         <div className="flex justify-between items-center p-4">
-          
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <FaPhoneAlt /> 
+              <FaPhoneAlt />
               <span>(225) 555-0118</span>
             </div>
             <div className="flex items-center space-x-2">
-              <FaEnvelope /> 
+              <FaEnvelope />
               <span>michelle.rivera@example.com</span>
             </div>
           </div>
@@ -23,9 +28,9 @@ const Header = () => {
           </div>
           <div className="flex items-center space-x-4">
             <span>Follow Us:</span>
-            <FaInstagram /> 
-            <FaYoutube /> 
-            <FaFacebookF /> 
+            <FaInstagram />
+            <FaYoutube />
+            <FaFacebookF />
             <FaTwitter />
           </div>
         </div>
