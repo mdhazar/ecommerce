@@ -5,20 +5,19 @@ import prettierPlugin from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
 
 export default [
-
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
     languageOptions: {
-      globals: globals.browser, 
+      globals: globals.browser,
     },
     plugins: {
-      prettier: prettierPlugin, 
+      prettier: prettierPlugin,
     },
     rules: {
-      "prettier/prettier": "error", 
+      "prettier/prettier": "error",
     },
   },
   pluginJs.configs.recommended,
-  pluginReact.configs.flat.recommended, 
-  prettierConfig, 
+  pluginReact.configs.flat.recommended,
+  prettierConfig,
 ];
