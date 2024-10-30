@@ -33,13 +33,25 @@ export default function TeamSection3() {
             <p className="text-gray-500">Profession</p>
 
             <div className="flex space-x-4 mt-4">
-              <a href="#" aria-label="Facebook" className="text-blue-600">
+              <a
+                href="#"
+                aria-label="Facebook"
+                className="hover:text-blue-600 text-[#395185]"
+              >
                 <FaFacebookF />
               </a>
-              <a href="#" aria-label="Instagram" className="text-pink-500">
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="hover:text-pink-500 text-black"
+              >
                 <FaInstagram />
               </a>
-              <a href="#" aria-label="Twitter" className="text-blue-400">
+              <a
+                href="#"
+                aria-label="Twitter"
+                className="hover:text-blue-500 text-[#55ACEE]"
+              >
                 <FaTwitter />
               </a>
             </div>

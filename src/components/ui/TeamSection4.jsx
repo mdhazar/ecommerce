@@ -25,7 +25,7 @@ export default function TeamSection4() {
         <a
           href="#"
           aria-label="Twitter"
-          className="hover:text-blue-400 text-[#55ACEE]"
+          className="hover:text-blue-500 text-[#55ACEE]"
         >
           <FaTwitter size={24} />
         </a>
