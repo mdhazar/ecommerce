@@ -4,7 +4,10 @@ export default {
   darkMode: ["selector", "class"],
   theme: {
     fontFamily: {
+
+
       sans: ["Montserrat", "sans-serif"],
+
     },
     container: { center: true, padding: "1rem" },
     extend: {
