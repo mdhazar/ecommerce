@@ -1,10 +1,9 @@
-// Signup.js
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import api from "../api/api"; // Axios instance
+import api from "../api/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useHistory } from "react-router-dom"; // For react-router-dom v5
+import { useHistory } from "react-router-dom";
 import Header from "@/layouts/header";
 
 function SignUp() {
@@ -21,7 +20,6 @@ function SignUp() {
   const history = useHistory();
 
   useEffect(() => {
-    // Fetch roles from /roles
     api
       .get("/roles")
       .then((response) => {
@@ -41,7 +39,6 @@ function SignUp() {
   }, []);
 
   useEffect(() => {
-    // Show store fields if the selected role is Store
     const storeRole = roles.find((role) => role.name === "Store");
     if (storeRole && selectedRole === storeRole.id) {
       setStoreFieldsVisible(true);
