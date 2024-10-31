@@ -55,7 +55,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center space-x-6 text-[#1da1f2]">
-          <a href="#" className="flex items-center space-x-1 ">
+          <a href="/signup" className="flex items-center space-x-1 ">
             <FaUser />
             <span>Login / Register</span>
           </a>
