@@ -1,5 +1,5 @@
 import React from "react";
-import productCardInfo from "../../assets/productCardInfo.png";
+import cardImage from "../../assets/productCardInfo.png";
 
 export default function ProductCardInfo() {
   return (
@@ -14,11 +14,7 @@ export default function ProductCardInfo() {
 
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
         <div className="flex-1 flex-shrink-0">
-          <img
-            src={productCardInfo}
-            alt="Product"
-            className="object-cover w-full"
-          />
+          <img src={cardImage} alt="Product" className="object-cover w-full" />
         </div>
 
         <div className="flex-1 flex flex-col">
