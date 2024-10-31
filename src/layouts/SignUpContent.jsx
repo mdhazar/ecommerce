@@ -16,21 +16,33 @@ function SignUpContent() {
   const [selectedRole, setSelectedRole] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storeFieldsVisible, setStoreFieldsVisible] = useState(false);
+  const [storeRoleId, setStoreRoleId] = useState(null);
   const history = useHistory();
 
   useEffect(() => {
     api
       .get("/roles")
       .then((response) => {
-        console.log("Fetched roles:", response.data); //Debug
+        console.log("Fetched roles:", response.data); // Debug
         setRoles(response.data);
-        // Set default selected role to Customer
+
+        const storeRole = response.data.find(
+          (role) => role.name.toLowerCase() === "mağaza"
+        );
+        if (storeRole) {
+          setStoreRoleId(storeRole.id);
+          console.log("Store role ID:", storeRole.id); // Debug
+        }
+
         const customerRole = response.data.find(
-          (role) => role.name === "Customer"
+          (role) => role.name.toLowerCase() === "müşteri"
         );
         if (customerRole) {
           setSelectedRole(customerRole.id);
           console.log("Default selected role ID:", customerRole.id); // Debug
+        } else if (response.data.length > 0) {
+          setSelectedRole(response.data[0].id);
+          console.log("Default selected role ID:", response.data[0].id); // Debug
         }
       })
       .catch((error) => {
@@ -40,20 +52,19 @@ function SignUpContent() {
   }, []);
 
   useEffect(() => {
-    const storeRole = roles.find((role) => role.name === "Store");
-    if (storeRole && selectedRole === storeRole.id) {
+    console.log("Current selectedRole:", selectedRole);
+    console.log("Checking for Store role visibility");
+    if (selectedRole == storeRoleId) {
       setStoreFieldsVisible(true);
-      console.log("Store fields are now visible"); // Debug
     } else {
       setStoreFieldsVisible(false);
-      console.log("Store fields are hidden"); // Debug
     }
-  }, [selectedRole, roles]);
+  }, [selectedRole, storeRoleId]);
 
   const onSubmit = (data) => {
     setIsSubmitting(true);
     console.log("Form data before processing:", data); // Debug
-    // Prepare data according to role
+
     let formData = {
       name: data.name,
       email: data.email,
@@ -61,9 +72,7 @@ function SignUpContent() {
       role_id: selectedRole,
     };
 
-    // If Store, add store fields
-    const storeRole = roles.find((role) => role.name === "Store");
-    if (storeRole && selectedRole === storeRole.id) {
+    if (selectedRole == storeRoleId) {
       formData.store = {
         name: data.store_name,
         phone: data.store_phone,
@@ -266,7 +275,9 @@ function SignUpContent() {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`w-full py-2 px-4 bg-blue-500 text-white rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`w-full py-2 px-4 bg-blue-500 text-white rounded ${
+            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           disabled={isSubmitting}
         >
           {isSubmitting ? (
