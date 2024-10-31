@@ -34,22 +34,22 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex space-x-6 text-gray-600">
-          <a href="#" className="">
+          <a href="/product" className="">
             Home
           </a>
-          <a href="#" className="">
+          <a href="/shop" className="">
             Shop <span className="ml-1">&#x25BE;</span>
           </a>
-          <a href="#" className="">
+          <a href="/about" className="">
             About
           </a>
           <a href="#" className="">
             Blog
           </a>
-          <a href="#" className="">
+          <a href="/contact" className="">
             Contact
           </a>
-          <a href="#" className="">
+          <a href="/team" className="">
             Pages
           </a>
         </div>
