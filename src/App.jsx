@@ -9,8 +9,8 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 
 import TeamPage from "./pages/TeamPage";
 
-
 import ContactPage from "./pages/ContactPage";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
   return (
@@ -22,12 +22,10 @@ function App() {
 
         <Route exact path="/shop" component={ShopPage} />
 
-
         <Route exact path="/team" component={TeamPage} />
 
         <Route exact path="/contact" component={ContactPage} />
-
-
+        <Route exact path="/about" component={AboutUs} />
       </Switch>
     </Router>
   );
