@@ -10,6 +10,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import TeamPage from "./pages/TeamPage";
 
 import ContactPage from "./pages/ContactPage";
+import SignUp from "./pages/SignUp";
 import AboutUs from "./pages/AboutUs";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route exact path="/product" component={ProductDetailPage} />
 
         <Route exact path="/shop" component={ShopPage} />
+        <Route path="/signup" component={SignUp} />
 
         <Route exact path="/team" component={TeamPage} />
 
