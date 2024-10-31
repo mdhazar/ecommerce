@@ -15,18 +15,15 @@ export default function ContactSection2() {
         style={{ backgroundImage: `url(${roomImageMobile})` }}
       ></div>
 
-      <div className="container relative p-8 z-10 flex flex-col items-center text-center  bg-opacity-80 ">
-        <h1 className="text-4xl font-bold text-gray-800  p-10 leading-snug">
+      <div className="container relative flex flex-col items-center text-center  bg-opacity-80 ">
+        <h1 className="text-xl lg:text-4xl font-bold text-gray-800 px-2 py-4 ">
           Questions & Answers
         </h1>
 
-        <p className="text-gray-600 text-xl mb-10 px-8 2xl:px-96">
+        <p className="text-gray-600 text-sm lg:text-xl 2xl:px-56">
           Problems trying to resolve the conflict between the two major realms
           of Classical physics:
         </p>
-        <button className="text-blue-400 font-bold text-xl hover:underline leading-snug">
-          CONTACT US
-        </button>
       </div>
     </div>
   );

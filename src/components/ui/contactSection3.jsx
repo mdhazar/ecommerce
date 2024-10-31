@@ -19,12 +19,14 @@ export default function ContactSection3() {
       ></div>
 
       <div className="relative z-10 text-center max-w-3xl p-8  bg-opacity-80 ">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">CONTACT US</h1>
+        <h1 className="text-xl lg:text-4xl font-bold text-gray-800 mb-4">
+          CONTACT US
+        </h1>
         <p className="text-gray-600 mb-8">
           Problems trying to resolve the conflict between the two major realms
           of Classical physics: Newtonian mechanics.
         </p>
-        <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 mb-8">
+        <button className="bg-[#23A6F0] text-white px-6 py-3 rounded-sm shadow-md hover:bg-blue-600 mb-8">
           CONTACT US
         </button>
 
