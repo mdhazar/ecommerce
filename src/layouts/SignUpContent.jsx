@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import api from "../api/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useHistory } from "react-router-dom";
 
 function SignUpContent() {
   const {
@@ -17,7 +16,6 @@ function SignUpContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [storeFieldsVisible, setStoreFieldsVisible] = useState(false);
   const [storeRoleId, setStoreRoleId] = useState(null);
-  const history = useHistory();
 
   useEffect(() => {
     api
@@ -104,7 +102,6 @@ function SignUpContent() {
       <ToastContainer />
       <h1 className="text-2xl font-bold mb-5">Sign Up</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Name */}
         <div className="mb-4">
           <label className="block text-gray-700">Name</label>
           <input
@@ -119,7 +116,6 @@ function SignUpContent() {
           )}
         </div>
 
-        {/* Email */}
         <div className="mb-4">
           <label className="block text-gray-700">Email</label>
           <input
@@ -132,7 +128,6 @@ function SignUpContent() {
           )}
         </div>
 
-        {/* Password */}
         <div className="mb-4">
           <label className="block text-gray-700">Password</label>
           <input
@@ -156,7 +151,6 @@ function SignUpContent() {
           )}
         </div>
 
-        {/* Confirm Password */}
         <div className="mb-4">
           <label className="block text-gray-700">Confirm Password</label>
           <input
@@ -175,7 +169,6 @@ function SignUpContent() {
           )}
         </div>
 
-        {/* Role */}
         <div className="mb-4">
           <label className="block text-gray-700">Role</label>
           <select
@@ -195,10 +188,8 @@ function SignUpContent() {
           )}
         </div>
 
-        {/* Store Fields */}
         {storeFieldsVisible && (
           <>
-            {/* Store Name */}
             <div className="mb-4">
               <label className="block text-gray-700">Store Name</label>
               <input
@@ -213,7 +204,6 @@ function SignUpContent() {
               )}
             </div>
 
-            {/* Store Phone */}
             <div className="mb-4">
               <label className="block text-gray-700">Store Phone</label>
               <input
@@ -232,7 +222,6 @@ function SignUpContent() {
               )}
             </div>
 
-            {/* Store Tax ID */}
             <div className="mb-4">
               <label className="block text-gray-700">Store Tax ID</label>
               <input
@@ -251,7 +240,6 @@ function SignUpContent() {
               )}
             </div>
 
-            {/* Store Bank Account */}
             <div className="mb-4">
               <label className="block text-gray-700">Store Bank Account</label>
               <input
@@ -272,7 +260,6 @@ function SignUpContent() {
           </>
         )}
 
-        {/* Submit Button */}
         <button
           type="submit"
           className={`w-full py-2 px-4 bg-blue-500 text-white rounded ${
