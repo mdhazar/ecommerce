@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
-
+import { useDispatch } from "react-redux";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
+import { verifyToken } from "./redux/thunks/authThunks";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import TeamPage from "./pages/TeamPage";
 import ContactPage from "./pages/ContactPage";
@@ -15,6 +15,12 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/LoginPage";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Dispatch verifyToken when the app starts
+    dispatch(verifyToken());
+  }, [dispatch]);
   return (
     <Router>
       <Switch>
