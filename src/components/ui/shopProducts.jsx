@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts } from "@/redux/thunks/productThunks";
 
 const ShopProducts = () => {
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
+
   const {
     products = [],
     total,
@@ -12,8 +15,10 @@ const ShopProducts = () => {
   } = useSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    dispatch(fetchProducts(currentPage, productsPerPage));
+  }, [dispatch, currentPage]);
+
+  const totalPages = Math.ceil(total / productsPerPage);
 
   if (loading) {
     return (
@@ -66,6 +71,44 @@ const ShopProducts = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-center mt-6 space-x-1">
+        {/* Previous Page Button */}
+        <button
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 rounded-md border border-gray-300"
+        >
+          Previous
+        </button>
+
+        {/* Page Number Buttons */}
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+          (pageNumber) =>
+            Math.abs(currentPage - pageNumber) <= 2 && (
+              <button
+                key={pageNumber}
+                onClick={() => setCurrentPage(pageNumber)}
+                className={`px-3 py-1 rounded-md border border-gray-300 ${
+                  currentPage === pageNumber
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700"
+                }`}
+              >
+                {pageNumber}
+              </button>
+            )
+        )}
+
+        {/* Next Page Button */}
+        <button
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 rounded-md border border-gray-300"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
