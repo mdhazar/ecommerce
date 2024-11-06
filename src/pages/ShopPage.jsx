@@ -6,6 +6,7 @@ import Footer from "../layouts/footer";
 import ShopCardSection from "../components/ui/shopCardSection";
 
 import ShopPageBrandIcons from "../components/ui/ShopPageBrandIcons";
+import ShopProducts from "@/components/ui/shopProducts";
 
 function ShopPage() {
   return (
@@ -14,7 +15,7 @@ function ShopPage() {
       <NavBar />
 
       <ShopCardSection />
-
+      <ShopProducts />
       <ShopPageBrandIcons />
       <Footer />
     </div>

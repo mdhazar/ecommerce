@@ -1,4 +1,11 @@
+import {
+  FETCH_PRODUCTS_REQUEST,
+  FETCH_PRODUCTS_SUCCESS,
+  FETCH_PRODUCTS_FAILURE,
+} from "../actions/productActionTypes";
+
 const initialState = {
+  loading: false,
   categories: [],
   productList: [],
   total: 0,
@@ -6,10 +13,33 @@ const initialState = {
   offset: 0,
   filter: "",
   fetchState: "NOT_FETCHED",
+  error: "",
 };
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case FETCH_PRODUCTS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: "",
+      };
+    case FETCH_PRODUCTS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        products: action.payload.products,
+        total: action.payload.total,
+        error: "",
+      };
+    case FETCH_PRODUCTS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        products: [],
+        total: 0,
+        error: action.payload,
+      };
     case "SET_CATEGORIES":
       return { ...state, categories: action.payload };
     case "SET_PRODUCT_LIST":
