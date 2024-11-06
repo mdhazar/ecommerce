@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
-
+import { useDispatch } from "react-redux";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
+import { verifyToken } from "./redux/thunks/authThunks";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import TeamPage from "./pages/TeamPage";
 import ContactPage from "./pages/ContactPage";
@@ -13,8 +13,15 @@ import AboutUs from "./pages/AboutUs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/LoginPage";
+import { fetchCategories } from "./redux/thunks/categoryThunks";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(verifyToken());
+    dispatch(fetchCategories());
+  }, [dispatch]);
   return (
     <Router>
       <Switch>
