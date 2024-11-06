@@ -13,13 +13,14 @@ import AboutUs from "./pages/AboutUs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/LoginPage";
+import { fetchCategories } from "./redux/thunks/categoryThunks";
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Dispatch verifyToken when the app starts
     dispatch(verifyToken());
+    dispatch(fetchCategories());
   }, [dispatch]);
   return (
     <Router>
