@@ -9,17 +9,17 @@ const ShopProducts = () => {
 
   const {
     products = [],
-    total,
+    total = 0,
     loading,
     error,
   } = useSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(fetchProducts(currentPage, productsPerPage));
+    const offset = (currentPage - 1) * productsPerPage;
+    dispatch(fetchProducts(offset, productsPerPage));
   }, [dispatch, currentPage]);
 
   const totalPages = Math.ceil(total / productsPerPage);
-
   if (loading) {
     return (
       <div className="w-full h-96 flex items-center justify-center">
@@ -38,6 +38,7 @@ const ShopProducts = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Product Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <div
@@ -67,14 +68,12 @@ const ShopProducts = () => {
                   ${product.price.toFixed(2)}
                 </span>
               </div>
-              <div className="mt-2"></div>
             </div>
           </div>
         ))}
       </div>
 
       <div className="flex justify-center mt-6 space-x-1">
-        {/* Previous Page Button */}
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
@@ -83,7 +82,6 @@ const ShopProducts = () => {
           Previous
         </button>
 
-        {/* Page Number Buttons */}
         {Array.from({ length: totalPages }, (_, index) => index + 1).map(
           (pageNumber) =>
             Math.abs(currentPage - pageNumber) <= 2 && (
@@ -101,7 +99,6 @@ const ShopProducts = () => {
             )
         )}
 
-        {/* Next Page Button */}
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
           disabled={currentPage === totalPages}
