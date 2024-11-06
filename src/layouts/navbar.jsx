@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaUser,
   FaSearch,
@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { fetchCategories } from "../redux/thunks/categoryThunks";
 import { setUser } from "../redux/actions/clientActions";
 import api from "../api/api";
 
@@ -20,6 +21,10 @@ const Navbar = () => {
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.category.categories);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -49,7 +54,7 @@ const Navbar = () => {
           </Link>
 
           {/* Shop Link with Dropdown Arrow */}
-          <div className="relative flex ">
+          <div className="relative flex">
             <Link
               to="/shop"
               className="text-gray-600 hover:text-gray-800 flex items-center"
@@ -58,13 +63,12 @@ const Navbar = () => {
             </Link>
             <button
               onClick={toggleDropdown}
-              className="text-gray-600 hover:text-gray-800 ml-2 "
+              className="text-gray-600 hover:text-gray-800 ml-2"
             >
               {dropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 top-full">
-                {" "}
                 <div className="grid grid-cols-2 p-4 gap-4">
                   {/* Left Column for "Kadın" */}
                   <div>
