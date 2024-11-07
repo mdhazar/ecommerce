@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts } from "@/redux/thunks/productThunks";
+import { useParams } from "react-router-dom";
 
 const ShopProducts = () => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
-
+  const { filter, sort } = useSelector((state) => state.filter);
   const {
     products = [],
     total = 0,
@@ -14,12 +15,33 @@ const ShopProducts = () => {
     error,
   } = useSelector((state) => state.product);
 
+  const { categoryId } = useParams();
+
   useEffect(() => {
     const offset = (currentPage - 1) * productsPerPage;
-    dispatch(fetchProducts(offset, productsPerPage));
-  }, [dispatch, currentPage]);
+    const queryParams = {
+      offset,
+      limit: productsPerPage,
+    };
+    if (categoryId) {
+      queryParams.category = categoryId;
+    }
+    if (sort) {
+      queryParams.sort = sort;
+    }
+    if (filter) {
+      queryParams.filter = filter;
+    }
+    dispatch(fetchProducts(queryParams));
+  }, [dispatch, currentPage, categoryId, filter, sort]);
+
+  // Reset currentPage when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, sort, categoryId]);
 
   const totalPages = Math.ceil(total / productsPerPage);
+
   if (loading) {
     return (
       <div className="w-full h-96 flex items-center justify-center">
@@ -73,7 +95,9 @@ const ShopProducts = () => {
         ))}
       </div>
 
+      {/* Pagination Controls */}
       <div className="flex justify-center mt-6 space-x-1">
+        {/* Previous Page Button */}
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
@@ -82,6 +106,7 @@ const ShopProducts = () => {
           Previous
         </button>
 
+        {/* Page Number Buttons */}
         {Array.from({ length: totalPages }, (_, index) => index + 1).map(
           (pageNumber) =>
             Math.abs(currentPage - pageNumber) <= 2 && (
@@ -99,6 +124,7 @@ const ShopProducts = () => {
             )
         )}
 
+        {/* Next Page Button */}
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
           disabled={currentPage === totalPages}
