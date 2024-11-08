@@ -5,15 +5,12 @@ import {
   fetchProductsFailure,
 } from "../actions/productActions";
 
-export const fetchProducts = (offset = 0, limit = 12) => {
+export const fetchProducts = (params) => {
   return async (dispatch) => {
     dispatch(fetchProductsRequest());
     try {
       const response = await api.get("/products", {
-        params: {
-          limit,
-          offset,
-        },
+        params,
       });
       const { products, total } = response.data;
 
