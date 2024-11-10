@@ -20,3 +20,17 @@ export const fetchProducts = (params) => {
     }
   };
 };
+
+export const fetchProduct = (productId) => {
+  return async (dispatch) => {
+    dispatch(fetchProductsRequest());
+    try {
+      const response = await api.get(`/products/${productId}`);
+      dispatch(fetchProductsSuccess([response.data], 1));
+    } catch (error) {
+      dispatch(
+        fetchProductsFailure(error.message || "Failed to fetch product")
+      );
+    }
+  };
+};
