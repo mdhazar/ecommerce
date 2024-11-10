@@ -8,6 +8,7 @@ const initialState = {
   loading: false,
   categories: [],
   productList: [],
+  currentProduct: null, // Add this for single product view
   total: 0,
   limit: 25,
   offset: 0,
@@ -30,6 +31,8 @@ const productReducer = (state = initialState, action) => {
         loading: false,
         products: action.payload.products,
         total: action.payload.total,
+        currentProduct:
+          action.payload.total === 1 ? action.payload.products[0] : null,
         error: "",
       };
     case FETCH_PRODUCTS_FAILURE:
@@ -37,6 +40,7 @@ const productReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         products: [],
+        currentProduct: null,
         total: 0,
         error: action.payload,
       };
