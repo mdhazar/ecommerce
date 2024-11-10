@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProduct } from "@/redux/thunks/productThunks";
+import { fetchProduct } from "../redux/thunks/productThunks";
 import { ArrowLeft } from "lucide-react";
 
 const ProductDetailPageContent = () => {
