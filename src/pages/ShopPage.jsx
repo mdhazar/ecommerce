@@ -5,8 +5,9 @@ import NavBar from "../layouts/navbar";
 import Footer from "../layouts/footer";
 import ShopCardSection from "../components/ui/shopCardSection";
 
-import FeaturedProducts from "../components/ui/featuredProducts";
 import ShopPageBrandIcons from "../components/ui/ShopPageBrandIcons";
+import ShopProducts from "@/components/ui/shopProducts";
+import ProductFilter from "@/components/ui/productFilter";
 
 function ShopPage() {
   return (
@@ -15,8 +16,8 @@ function ShopPage() {
       <NavBar />
 
       <ShopCardSection />
-
-      <FeaturedProducts />
+      <ProductFilter />
+      <ShopProducts />
       <ShopPageBrandIcons />
       <Footer />
     </div>

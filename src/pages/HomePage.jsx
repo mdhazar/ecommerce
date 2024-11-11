@@ -8,6 +8,7 @@ import ShopCardSection from "../components/ui/shopCardSection";
 import ShopSection from "../components/ui/shopSection";
 import BuySection from "../components/ui/buySection";
 import FeaturedProducts from "../components/ui/featuredProducts";
+import BestSellerProducts from "@/components/ui/BestSellerProducts";
 
 function HomePage() {
   return (
@@ -16,6 +17,7 @@ function HomePage() {
       <NavBar />
       <NewCollection />
       <ShopCardSection />
+      <BestSellerProducts />
       <ShopSection />
       <BuySection />
       <FeaturedProducts />
