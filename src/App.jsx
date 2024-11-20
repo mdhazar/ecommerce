@@ -14,6 +14,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/LoginPage";
 import { fetchCategories } from "./redux/thunks/categoryThunks";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import ShoppingCartPage from "./components/ui/shoppingPageCartComponent";
+import { loadCartFromStorage } from "./redux/actions/shoppingCartActions";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,6 +23,7 @@ function App() {
   useEffect(() => {
     dispatch(verifyToken());
     dispatch(fetchCategories());
+    dispatch(loadCartFromStorage());
   }, [dispatch]);
 
   return (
@@ -36,6 +39,7 @@ function App() {
           component={ProductDetailPage}
         />
         <Route path="/signup" component={SignUp} />
+        <Route path="/cart" component={ShoppingCartPage} />
         <Route path="/login" component={Login} />
         <Route exact path="/team" component={TeamPage} />
         <Route exact path="/contact" component={ContactPage} />
