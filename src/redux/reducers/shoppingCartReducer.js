@@ -1,3 +1,5 @@
+// redux/reducers/shoppingCartReducer.js
+
 import {
   SET_CART,
   SET_PAYMENT,
@@ -6,6 +8,7 @@ import {
   REMOVE_FROM_CART,
   UPDATE_CART_ITEM,
   TOGGLE_CART_ITEM,
+  LOAD_CART_FROM_STORAGE,
 } from "../actions/shoppingCartActions";
 
 const initialState = {
@@ -16,6 +19,12 @@ const initialState = {
 
 const shoppingCartReducer = (state = initialState, action) => {
   switch (action.type) {
+    case LOAD_CART_FROM_STORAGE:
+      return {
+        ...state,
+        cart: action.payload,
+      };
+
     case SET_CART:
       return { ...state, cart: action.payload };
 
