@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 import {
   updateCartItem,
@@ -10,10 +10,13 @@ import {
 import Header from "@/layouts/header";
 import Navbar from "@/layouts/navbar";
 import Footer from "@/layouts/footer";
+import { toast } from "react-toastify";
 
 const ShoppingCartPage = () => {
   const cart = useSelector((state) => state.shoppingCart.cart);
+  const user = useSelector((state) => state.client.user);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleQuantityChange = (productId, currentCount, change) => {
     const newCount = currentCount + change;
@@ -34,6 +37,16 @@ const ShoppingCartPage = () => {
 
   const handleToggleCheck = (productId) => {
     dispatch(toggleCartItem(productId));
+  };
+
+  const handleCreateOrder = () => {
+    if (!user || !Object.keys(user).length) {
+      // If user is not logged in, redirect to login with return path
+      history.push("/login", { from: "/order" });
+      return;
+    }
+    // If user is logged in, proceed to order page
+    history.push("/order");
   };
 
   const calculateSubtotal = () => {
@@ -215,6 +228,7 @@ const ShoppingCartPage = () => {
                     </div>
 
                     <button
+                      onClick={handleCreateOrder}
                       className="w-full bg-[#23A6F0] text-white py-3 px-6 rounded-lg hover:bg-[#1a8dd3] transition-colors mt-6 disabled:bg-gray-300 disabled:cursor-not-allowed"
                       disabled={!cart.some((item) => item.checked)}
                     >

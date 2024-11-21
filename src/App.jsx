@@ -16,6 +16,8 @@ import { fetchCategories } from "./redux/thunks/categoryThunks";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ShoppingCartPage from "./components/ui/shoppingPageCartComponent";
 import { loadCartFromStorage } from "./redux/actions/shoppingCartActions";
+import OrderPage from "./pages/OrderPage";
+import ProtectedRoute from "./components/ui/protectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -44,9 +46,18 @@ function App() {
         <Route exact path="/team" component={TeamPage} />
         <Route exact path="/contact" component={ContactPage} />
         <Route exact path="/about" component={AboutUs} />
+        <Route
+          path="/order"
+          render={(props) => (
+            <ProtectedRoute>
+              <OrderPage {...props} />
+            </ProtectedRoute>
+          )}
+        />
       </Switch>
       <ToastContainer />
     </Router>
   );
 }
+
 export default App;
