@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProduct } from "../redux/thunks/productThunks";
+import { addToCart } from "../redux/actions/shoppingCartActions";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "react-toastify";
 
 const ProductDetailPageContent = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
+  const [quantity, setQuantity] = useState(1);
   const { currentProduct, loading, error } = useSelector(
     (state) => state.product
   );
@@ -20,6 +23,20 @@ const ProductDetailPageContent = () => {
 
   const handleBack = () => {
     history.goBack();
+  };
+
+  const handleAddToCart = () => {
+    if (currentProduct.stock < quantity) {
+      toast.error("Not enough stock available!");
+      return;
+    }
+
+    // Add the selected quantity to cart
+    for (let i = 0; i < quantity; i++) {
+      dispatch(addToCart(currentProduct));
+    }
+
+    toast.success(`${currentProduct.name} added to cart!`);
   };
 
   if (loading) {
@@ -53,7 +70,7 @@ const ProductDetailPageContent = () => {
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Product Images */}
+        {/* Product Images Section - Unchanged */}
         <div className="space-y-4">
           {currentProduct.images && currentProduct.images.length > 0 ? (
             <>
@@ -86,7 +103,7 @@ const ProductDetailPageContent = () => {
           )}
         </div>
 
-        {/* Product Details */}
+        {/* Product Details Section - Updated with quantity selector */}
         <div className="space-y-6">
           <h1 className="text-3xl font-bold text-gray-900">
             {currentProduct.name}
@@ -124,9 +141,11 @@ const ProductDetailPageContent = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Stock:</span>
-              <span className="font-semibold">
+              <span
+                className={`font-semibold ${currentProduct.stock === 0 ? "text-red-500" : "text-green-500"}`}
+              >
                 {currentProduct.stock > 0
-                  ? currentProduct.stock
+                  ? `${currentProduct.stock} available`
                   : "Out of Stock"}
               </span>
             </div>
@@ -136,14 +155,39 @@ const ProductDetailPageContent = () => {
             </div>
           </div>
 
+          {/* Quantity Selector */}
+          {currentProduct.stock > 0 && (
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-600">Quantity:</span>
+              <div className="flex items-center border rounded-md">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-3 py-1 border-r hover:bg-gray-100"
+                >
+                  -
+                </button>
+                <span className="px-4 py-1">{quantity}</span>
+                <button
+                  onClick={() =>
+                    setQuantity(Math.min(currentProduct.stock, quantity + 1))
+                  }
+                  className="px-3 py-1 border-l hover:bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             <button
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              onClick={handleAddToCart}
+              className="w-full bg-[#23A6F0] text-white py-3 px-6 rounded-lg hover:bg-[#1a8dd3] transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
               disabled={currentProduct.stock === 0}
             >
-              Add to Cart
+              {currentProduct.stock === 0 ? "Out of Stock" : "Add to Cart"}
             </button>
-            <button className="w-full border border-blue-600 text-blue-600 py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+            <button className="w-full border border-[#23A6F0] text-[#23A6F0] py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors duration-200">
               Add to Wishlist
             </button>
           </div>
