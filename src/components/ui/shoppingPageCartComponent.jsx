@@ -41,11 +41,10 @@ const ShoppingCartPage = () => {
 
   const handleCreateOrder = () => {
     if (!user || !Object.keys(user).length) {
-      // If user is not logged in, redirect to login with return path
       history.push("/login", { from: "/order" });
       return;
     }
-    // If user is logged in, proceed to order page
+
     history.push("/order");
   };
 

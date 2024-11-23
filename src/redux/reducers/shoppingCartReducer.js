@@ -1,5 +1,3 @@
-// redux/reducers/shoppingCartReducer.js
-
 import {
   SET_CART,
   SET_PAYMENT,

@@ -4,9 +4,6 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/thunks/authThunks";
 import { useHistory, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Header from "@/layouts/header";
-import Navbar from "@/layouts/navbar";
-import Footer from "@/layouts/footer";
 
 const LoginPageContent = () => {
   const [isLoading, setIsLoading] = useState(false);
