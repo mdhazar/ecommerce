@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import api from "../api/api";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 const AddressForm = ({ onSubmit, initialData = null, onCancel }) => {
   const {
@@ -173,6 +174,7 @@ const AddressForm = ({ onSubmit, initialData = null, onCancel }) => {
   );
 };
 const OrderPageContent = () => {
+  const history = useHistory();
   const [addresses, setAddresses] = useState([]);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
@@ -225,6 +227,18 @@ const OrderPageContent = () => {
   const handleEditAddress = (address) => {
     setEditingAddress(address);
     setShowAddressForm(true);
+  };
+
+  const handleContinueToPayment = () => {
+    if (
+      !selectedShippingAddress ||
+      (!useSameAddress && !selectedBillingAddress)
+    ) {
+      toast.error("Please select both shipping and billing addresses");
+      return;
+    }
+    // Navigate to payment page
+    history.push("/payment");
   };
 
   return (
@@ -360,6 +374,7 @@ const OrderPageContent = () => {
 
       <div className="flex justify-end">
         <button
+          onClick={handleContinueToPayment}
           disabled={
             !selectedShippingAddress ||
             (!useSameAddress && !selectedBillingAddress)

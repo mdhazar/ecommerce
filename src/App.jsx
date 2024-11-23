@@ -17,6 +17,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import ShoppingCartPage from "./components/ui/shoppingPageCartComponent";
 import { loadCartFromStorage } from "./redux/actions/shoppingCartActions";
 import OrderPage from "./pages/OrderPage";
+import Payment from "./pages/PaymentPage";
 import ProtectedRoute from "./components/ui/protectedRoute";
 
 function App() {
@@ -51,6 +52,14 @@ function App() {
           render={(props) => (
             <ProtectedRoute>
               <OrderPage {...props} />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/payment"
+          render={(props) => (
+            <ProtectedRoute>
+              <Payment {...props} />
             </ProtectedRoute>
           )}
         />
