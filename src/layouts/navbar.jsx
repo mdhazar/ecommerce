@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaUser,
   FaSearch,
@@ -15,6 +15,7 @@ import { fetchCategories } from "../redux/thunks/categoryThunks";
 import { setUser } from "../redux/actions/clientActions";
 import api from "../api/api";
 import CartDropdown from "../components/ui/CartDropdown";
+import { ChevronDown } from "lucide-react";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,15 +25,14 @@ const Navbar = () => {
   const categories = useSelector((state) => state.category.categories);
   const cart = useSelector((state) => state.shoppingCart.cart);
   const dispatch = useDispatch();
-
-  // Calculate total items in cart
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
   const cartItemsCount = cart.reduce((total, item) => total + item.count, 0);
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".dropdown-container")) {
@@ -40,6 +40,9 @@ const Navbar = () => {
       }
       if (!event.target.closest(".cart-container")) {
         setCartOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
       }
     };
 
@@ -173,19 +176,44 @@ const Navbar = () => {
 
           {/* User Section */}
           {user && user.email ? (
-            <div className="flex items-center space-x-2">
-              <img
-                src={user.gravatarUrl}
-                alt="User Avatar"
-                className="w-8 h-8 rounded-full"
-              />
-              <span className="text-gray-700">{user.name || user.email}</span>
-              <button
-                onClick={handleLogout}
-                className="text-sm text-red-600 hover:text-red-800"
-              >
-                Logout
-              </button>
+            <div className="relative" ref={userMenuRef}>
+              <div className="flex items-center space-x-2">
+                <img
+                  src={user.gravatarUrl}
+                  alt="User Avatar"
+                  className="w-8 h-8 rounded-full"
+                />
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center space-x-1"
+                >
+                  <span className="text-gray-700">
+                    {user.name || user.email}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                    <Link
+                      to="/orders"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Order History
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsUserMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <div className="flex items-center space-x-4">

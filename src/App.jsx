@@ -19,6 +19,7 @@ import { loadCartFromStorage } from "./redux/actions/shoppingCartActions";
 import OrderPage from "./pages/OrderPage";
 import Payment from "./pages/PaymentPage";
 import ProtectedRoute from "./components/ui/protectedRoute";
+import PreviousOrdersPage from "./pages/PreviousOrdersPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -52,6 +53,14 @@ function App() {
           render={(props) => (
             <ProtectedRoute>
               <OrderPage {...props} />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/orders"
+          render={(props) => (
+            <ProtectedRoute>
+              <PreviousOrdersPage {...props} />
             </ProtectedRoute>
           )}
         />
