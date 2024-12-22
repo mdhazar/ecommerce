@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+
 import { ChevronDown, ChevronUp } from "lucide-react";
 import api from "@/api/api";
 import Navbar from "@/layouts/navbar";
@@ -39,7 +39,6 @@ const PreviousOrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedOrders, setExpandedOrders] = useState({});
-  const user = useSelector((state) => state.client.user);
 
   useEffect(() => {
     fetchOrders();
