@@ -43,17 +43,13 @@ const ShopProducts = () => {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
 
-    // Find the category information
     const category = categories.find((cat) => cat.id === product.category_id);
     if (!category) return;
 
-    // Get the category name from the code (assuming code format is "k:tisort" or similar)
     const categoryName = category.code.split(":")[1];
 
-    // Get gender from category (assuming it's stored in category.gender as 'k' or 'e')
     const productGender = category.gender;
 
-    // Build the URL with all required parameters
     history.push(
       `/shop/${productGender}/${categoryName}/${category.id}/${productNameSlug}/${product.id}`
     );

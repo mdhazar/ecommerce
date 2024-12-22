@@ -56,6 +56,11 @@ export const updateCartItem = (productId, count) => (dispatch, getState) => {
   const updatedCart = getState().shoppingCart.cart;
   localStorage.setItem("cart", JSON.stringify(updatedCart));
 };
+export const CLEAR_CART = "CLEAR_CART";
+
+export const clearCart = () => ({
+  type: CLEAR_CART,
+});
 
 export const toggleCartItem = (productId) => (dispatch, getState) => {
   dispatch({
