@@ -122,7 +122,7 @@ function Payment() {
         localStorage.setItem("cart", JSON.stringify([]));
         setTimeout(() => {
           history.push("/");
-        }, 2000);
+        }, 6000);
       }
     } catch (error) {
       console.error("Order placement error:", error);
