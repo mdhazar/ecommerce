@@ -1,19 +1,28 @@
-// src/pages/Payment.jsx
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import OrderSummary from "@/components/ui/orderSummary";
 import Footer from "@/layouts/footer";
 import Navbar from "@/layouts/navbar";
 import CardList from "@/components/ui/CardList";
 import CardForm from "@/components/ui/CardForm";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 import api from "@/api/api";
+import { clearCart } from "@/redux/actions/shoppingCartActions";
+import confetti from "canvas-confetti";
 
 function Payment() {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const cart = useSelector((state) => state.shoppingCart.cart);
+  const selectedAddress = useSelector((state) => state.shoppingCart.address);
+  const shippingAddress = useSelector((state) => state.shoppingCart.address);
+
   const [cards, setCards] = React.useState([]);
   const [showCardForm, setShowCardForm] = React.useState(false);
   const [editingCard, setEditingCard] = React.useState(null);
   const [selectedCard, setSelectedCard] = React.useState(null);
-
+  console.log("Shipping Address:", shippingAddress);
   React.useEffect(() => {
     fetchCards();
   }, []);
@@ -56,12 +65,72 @@ function Payment() {
     }
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    if (!selectedAddress || !selectedAddress.id) {
+      toast.error("Please select a shipping address first");
+      history.push("/order");
+      return;
+    }
     if (!selectedCard) {
       toast.error("Please select a payment method");
       return;
     }
-    console.log("Place order with card:", selectedCard);
+
+    try {
+      const selectedItems = cart.filter((item) => item.checked);
+
+      if (selectedItems.length === 0) {
+        toast.error("Please select items to order");
+        return;
+      }
+
+      const totalPrice = selectedItems.reduce(
+        (sum, item) => sum + item.product.price * item.count,
+        0
+      );
+
+      const orderPayload = {
+        address_id: selectedAddress.id,
+        order_date: new Date().toISOString(),
+        card_no: parseInt(selectedCard.card_no),
+        card_name: selectedCard.name_on_card,
+        card_expire_month: parseInt(selectedCard.expire_month),
+        card_expire_year: parseInt(selectedCard.expire_year),
+        card_ccv: parseInt(selectedCard.card_ccv),
+        price: totalPrice,
+        products: selectedItems.map((item) => ({
+          product_id: item.product.id,
+          count: item.count,
+          detail: item.detail || "",
+        })),
+      };
+
+      console.log("Order Payload:", orderPayload);
+
+      const response = await api.post("/order", orderPayload);
+
+      if (response.data) {
+        toast.success(
+          "🎉 Congratulations! Your order has been successfully placed!"
+        );
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+        dispatch(clearCart());
+        localStorage.setItem("cart", JSON.stringify([]));
+        setTimeout(() => {
+          history.push("/");
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Order placement error:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to place order. Please try again."
+      );
+    }
   };
 
   return (

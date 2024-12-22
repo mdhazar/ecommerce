@@ -4,7 +4,7 @@ import api from "../api/api";
 import CardList from "./CardList";
 import CardForm from "./CardForm";
 
-const PaymentPageContent = () => {
+const PaymentPageContent = ({ onCardSelect }) => {
   const [cards, setCards] = useState([]);
   const [showCardForm, setShowCardForm] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
@@ -93,15 +93,6 @@ const PaymentPageContent = () => {
           onDeleteCard={handleDeleteCard}
         />
       )}
-
-      <div className="flex justify-end">
-        <button
-          disabled={!selectedCard}
-          className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          Place Order
-        </button>
-      </div>
     </div>
   );
 };

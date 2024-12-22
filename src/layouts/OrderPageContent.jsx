@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-
+import { setAddress } from "@/redux/actions/shoppingCartActions";
 import { useForm } from "react-hook-form";
 import api from "../api/api";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
 const AddressForm = ({ onSubmit, initialData = null, onCancel }) => {
   const {
     register,
@@ -174,6 +174,7 @@ const AddressForm = ({ onSubmit, initialData = null, onCancel }) => {
   );
 };
 const OrderPageContent = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const [addresses, setAddresses] = useState([]);
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -237,7 +238,9 @@ const OrderPageContent = () => {
       toast.error("Please select both shipping and billing addresses");
       return;
     }
-    // Navigate to payment page
+
+    dispatch(setAddress(selectedShippingAddress));
+
     history.push("/payment");
   };
 

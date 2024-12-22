@@ -7,12 +7,13 @@ import {
   UPDATE_CART_ITEM,
   TOGGLE_CART_ITEM,
   LOAD_CART_FROM_STORAGE,
+  CLEAR_CART,
 } from "../actions/shoppingCartActions";
 
 const initialState = {
   cart: [],
   payment: {},
-  address: {},
+  address: null,
 };
 
 const shoppingCartReducer = (state = initialState, action) => {
@@ -81,6 +82,11 @@ const shoppingCartReducer = (state = initialState, action) => {
             ? { ...item, checked: !item.checked }
             : item
         ),
+      };
+    case CLEAR_CART:
+      return {
+        ...state,
+        cart: [],
       };
 
     default:
