@@ -1,10 +1,10 @@
 import React from "react";
-import hooli from "../../assets/Hooli.png";
-import lyft from "../../assets/Lyft.png";
-import robinHood from "../../assets/RobinHood.png";
-import stripe from "../../assets/Stripe.png";
-import aws from "../../assets/Aws.png";
-import reddit from "../../assets/Reddit.png";
+import hooli from "@/assets/Hooli.png";
+import lyft from "@/assets/Lyft.png";
+import robinHood from "@/assets/RobinHood.png";
+import stripe from "@/assets/Stripe.png";
+import aws from "@/assets/Aws.png";
+import reddit from "@/assets/Reddit.png";
 const ShopPageBrandIcons = () => {
   return (
     <div className="container flex flex-col md:flex-row items-center justify-between space-y-6 space-x-6">

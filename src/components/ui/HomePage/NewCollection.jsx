@@ -8,7 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import productSlide1 from "../../assets/productSlide1.jpg";
+import productSlide1 from "@/assets/productSlide1.jpg";
 
 const collections = [
   {

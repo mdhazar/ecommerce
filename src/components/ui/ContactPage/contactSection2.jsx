@@ -1,6 +1,6 @@
 import React from "react";
-import roomImageMobile from "../../assets/roomImage1.png";
-import roomImageDesktop from "../../assets/roomImage.png";
+import roomImageMobile from "@/assets/roomImage1.png";
+import roomImageDesktop from "@/assets/roomImage.png";
 
 export default function ContactSection2() {
   return (

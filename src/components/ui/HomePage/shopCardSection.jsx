@@ -1,8 +1,8 @@
 import React from "react";
-import men from "../../assets/men.png";
-import women from "../../assets/women.png";
-import accessories from "../../assets/accessories.png";
-import kids from "../../assets/kids.png";
+import men from "@/assets/men.png";
+import women from "@/assets/women.png";
+import accessories from "@/assets/accessories.png";
+import kids from "@/assets/kids.png";
 
 const ShopCard = ({ image, label }) => {
   return (
@@ -23,7 +23,6 @@ const ShopCardSection = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-8">
-
         <h2 className="text-xl font-bold">EDITOR&apos;S PICK</h2>
 
         <p className="text-gray-500">

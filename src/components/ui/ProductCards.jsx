@@ -7,10 +7,10 @@ import {
   Eye,
 } from "lucide-react";
 
-import productCard1 from "../../assets/productCard1.jpg";
-import productCard2 from "../../assets/productCard2.jpg";
-import filledStar from "../../assets/filled-star.png";
-import emptyStar from "../../assets/empty-star.png";
+import productCard1 from "@/assets/productCard1.jpg";
+import productCard2 from "@/assets/productCard2.jpg";
+import filledStar from "@/assets/filled-star.png";
+import emptyStar from "@/assets/empty-star.png";
 const products = [productCard1, productCard2];
 
 export default function ProductCards() {

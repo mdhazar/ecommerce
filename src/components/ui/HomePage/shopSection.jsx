@@ -1,5 +1,5 @@
 import React from "react";
-import cover2 from "../../assets/cover2.png";
+import cover2 from "@/assets/cover2.png";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {

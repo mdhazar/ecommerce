@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import CardFormInputs from "../CardFormInputs";
+import CardFormInputs from "@/components/ui/CardFormInputs";
 
 const CardForm = ({ onSubmit, initialData = null, onCancel }) => {
   const {

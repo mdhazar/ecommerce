@@ -11,10 +11,10 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchCategories } from "../redux/thunks/categoryThunks";
-import { setUser } from "../redux/actions/clientActions";
-import api from "../api/api";
-import CartDropdown from "../components/ui/CartDropdown";
+import { fetchCategories } from "@/redux/thunks/categoryThunks";
+import { setUser } from "@/redux/actions/clientActions";
+import api from "@/api/api";
+import CartDropdown from "@/components/ui/CartDropdown";
 import { ChevronDown } from "lucide-react";
 
 const Navbar = () => {

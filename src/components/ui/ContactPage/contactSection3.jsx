@@ -1,6 +1,6 @@
 import React from "react";
-import contactImage from "../../assets/contactSection3a.png";
-import roomImageDesktop from "../../assets/contactSection3b.png";
+import contactImage from "@/assets/contactSection3a.png";
+import roomImageDesktop from "@/assets/contactSection3b.png";
 
 export default function ContactSection3() {
   return (

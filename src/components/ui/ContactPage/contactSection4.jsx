@@ -1,5 +1,5 @@
 import React from "react";
-import contactSection4a from "../../assets/contactSection4a.png"; // Adjust the path as needed
+import contactSection4a from "@/assets/contactSection4a.png";
 
 export default function ContactSection4() {
   return (
