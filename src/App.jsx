@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/LoginPage";
 import { fetchCategories } from "./redux/thunks/categoryThunks";
 import ProductDetailPage from "./pages/ProductDetailPage";
-import ShoppingCartPage from "./components/ui/shoppingPageCartComponent";
+import ShoppingCartPage from "./components/ui/ProductDetailPage/shoppingPageCartComponent";
 import { loadCartFromStorage } from "./redux/actions/shoppingCartActions";
 import OrderPage from "./pages/OrderPage";
 import Payment from "./pages/PaymentPage";

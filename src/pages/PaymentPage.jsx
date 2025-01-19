@@ -1,10 +1,10 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import OrderSummary from "@/components/ui/orderSummary";
+import OrderSummary from "@/components/ui/PaymentPage/orderSummary";
 import Footer from "@/layouts/footer";
 import Navbar from "@/layouts/navbar";
-import CardList from "@/components/ui/CardList";
-import CardForm from "@/components/ui/CardForm";
+import CardList from "@/components/ui/PaymentPage/CardList";
+import CardForm from "@/components/ui/PaymentPage/CardForm";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import api from "@/api/api";
