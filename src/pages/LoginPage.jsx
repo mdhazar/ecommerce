@@ -1,5 +1,5 @@
-import Footer from "@/layouts/footer";
-import Header from "@/layouts/header";
+import Footer from "@/layouts/Footer";
+import Header from "@/layouts/Header";
 import LoginPageContent from "@/layouts/LoginPageContent";
 
 import React from "react";

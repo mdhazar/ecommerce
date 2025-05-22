@@ -14,11 +14,11 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/LoginPage";
 import { fetchCategories } from "./redux/thunks/categoryThunks";
 import ProductDetailPage from "./pages/ProductDetailPage";
-import ShoppingCartPage from "./components/ui/ProductDetailPage/shoppingPageCartComponent";
+import ShoppingCartPage from "./components/ui/ProductDetailPage/ShoppingPageCartComponent";
 import { loadCartFromStorage } from "./redux/actions/shoppingCartActions";
 import OrderPage from "./pages/OrderPage";
 import Payment from "./pages/PaymentPage";
-import ProtectedRoute from "./components/ui/protectedRoute";
+import ProtectedRoute from "./components/ui/layout/ProtectedRoute";
 import PreviousOrdersPage from "./pages/PreviousOrdersPage";
 
 function App() {

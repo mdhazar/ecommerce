@@ -1,9 +1,9 @@
-import AboutUsSection1 from "@/components/ui/AboutUsSection1";
+import AboutUsSection from "@/components/ui/common/AboutUsSection";
 import ShopPageBrandIcons from "@/components/ui/ProductDetailPage/ShopPageBrandIcons";
 import TeamSection3 from "@/components/ui/TeamPage/TeamSection3";
-import Footer from "@/layouts/footer";
-import Header from "@/layouts/header";
-import Navbar from "@/layouts/navbar";
+import Footer from "@/layouts/Footer";
+import Header from "@/layouts/Header";
+import Navbar from "@/layouts/Navbar";
 import React from "react";
 
 function AboutUs() {
@@ -14,7 +14,7 @@ function AboutUs() {
       <TeamSection3 />
 
       <ShopPageBrandIcons />
-      <AboutUsSection1 />
+      <AboutUsSection />
       <Footer />
     </div>
   );

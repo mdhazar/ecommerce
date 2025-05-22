@@ -12,7 +12,7 @@ const ProductDetailPageContent = () => {
   const history = useHistory();
   const [quantity, setQuantity] = useState(1);
   const { currentProduct, loading, error } = useSelector(
-    (state) => state.product
+    (state) => state.product,
   );
 
   useEffect(() => {

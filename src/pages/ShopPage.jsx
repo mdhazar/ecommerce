@@ -1,13 +1,13 @@
 import React from "react";
 
-import Header from "@/layouts/header";
-import NavBar from "@/layouts/navbar";
-import Footer from "@/layouts/footer";
-import ShopCardSection from "@/components/ui/HomePage/shopCardSection";
+import Header from "@/layouts/Header";
+import NavBar from "@/layouts/Navbar";
+import Footer from "@/layouts/Footer";
+import ShopCardSection from "@/components/ui/HomePage/ShopCardSection";
 
 import ShopPageBrandIcons from "@/components/ui/ProductDetailPage/ShopPageBrandIcons";
-import ShopProducts from "@/components/ui/shopProducts";
-import ProductFilter from "@/components/ui/productFilter";
+import ShopProducts from "@/components/ui/product/ShopProducts";
+import ProductFilter from "@/components/ui/product/ProductFilter";
 
 function ShopPage() {
   return (

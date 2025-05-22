@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 import api from "@/api/api";
 import CardList from "@/PaymentPage/CardList";
 import CardForm from "@/PaymentPage/CardForm";
@@ -18,7 +19,8 @@ const PaymentPageContent = ({ onCardSelect }) => {
     try {
       const response = await api.get("/user/card");
       setCards(response.data);
-    } catch (error) {
+    } catch (err) {
+      console.error("Error fetching cards:", err);
       toast.error("Failed to fetch cards");
     }
   };
@@ -35,7 +37,8 @@ const PaymentPageContent = ({ onCardSelect }) => {
       fetchCards();
       setShowCardForm(false);
       setEditingCard(null);
-    } catch (error) {
+    } catch (err) {
+      console.error("Error saving card:", err);
       toast.error("Failed to save card");
     }
   };
@@ -46,10 +49,16 @@ const PaymentPageContent = ({ onCardSelect }) => {
         await api.delete(`/user/card/${cardId}`);
         toast.success("Card deleted successfully");
         fetchCards();
-      } catch (error) {
+      } catch (err) {
+        console.error("Error deleting card:", err);
         toast.error("Failed to delete card");
       }
     }
+  };
+
+  const handleSelectCard = (card) => {
+    setSelectedCard(card);
+    onCardSelect?.(card);
   };
 
   return (
@@ -85,7 +94,7 @@ const PaymentPageContent = ({ onCardSelect }) => {
         <CardList
           cards={cards}
           selectedCard={selectedCard}
-          onSelectCard={setSelectedCard}
+          onSelectCard={handleSelectCard}
           onEditCard={(card) => {
             setEditingCard(card);
             setShowCardForm(true);
@@ -95,6 +104,10 @@ const PaymentPageContent = ({ onCardSelect }) => {
       )}
     </div>
   );
+};
+
+PaymentPageContent.propTypes = {
+  onCardSelect: PropTypes.func,
 };
 
 export default PaymentPageContent;

@@ -16,6 +16,11 @@ export default [
     rules: {
       "prettier/prettier": "error",
     },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
   },
   pluginJs.configs.recommended,
   pluginReact.configs.flat.recommended,

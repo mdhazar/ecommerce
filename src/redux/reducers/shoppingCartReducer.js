@@ -35,7 +35,7 @@ const shoppingCartReducer = (state = initialState, action) => {
 
     case ADD_TO_CART: {
       const existingItem = state.cart.find(
-        (item) => item.product.id === action.payload.id
+        (item) => item.product.id === action.payload.id,
       );
 
       if (existingItem) {
@@ -44,7 +44,7 @@ const shoppingCartReducer = (state = initialState, action) => {
           cart: state.cart.map((item) =>
             item.product.id === action.payload.id
               ? { ...item, count: item.count + 1 }
-              : item
+              : item,
           ),
         };
       }
@@ -70,7 +70,7 @@ const shoppingCartReducer = (state = initialState, action) => {
         cart: state.cart.map((item) =>
           item.product.id === action.payload.productId
             ? { ...item, count: action.payload.count }
-            : item
+            : item,
         ),
       };
 
@@ -80,7 +80,7 @@ const shoppingCartReducer = (state = initialState, action) => {
         cart: state.cart.map((item) =>
           item.product.id === action.payload
             ? { ...item, checked: !item.checked }
-            : item
+            : item,
         ),
       };
     case CLEAR_CART:

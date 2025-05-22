@@ -8,7 +8,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/components/ui/common/Carousel";
 
 const ProductCard = ({ image, title, description, price }) => {
   return (
