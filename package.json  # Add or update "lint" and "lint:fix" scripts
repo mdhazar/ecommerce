@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
-  },
-  "devDependencies": {
-    "eslint": "^8.0.0"
-  }
-}
