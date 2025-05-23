@@ -7,9 +7,9 @@ import {
   removeFromCart,
   toggleCartItem,
 } from "@/redux/actions/shoppingCartActions";
-import Header from "@/layouts/header";
-import Navbar from "@/layouts/navbar";
-import Footer from "@/layouts/footer";
+import Header from "@/layouts/Header";
+import Navbar from "@/layouts/Navbar";
+import Footer from "@/layouts/Footer";
 import { toast } from "react-toastify";
 
 const ShoppingCartPage = () => {
@@ -151,7 +151,7 @@ const ShoppingCartPage = () => {
                                   handleQuantityChange(
                                     item.product.id,
                                     item.count,
-                                    -1
+                                    -1,
                                   )
                                 }
                                 disabled={item.count <= 1}
@@ -167,7 +167,7 @@ const ShoppingCartPage = () => {
                                   handleQuantityChange(
                                     item.product.id,
                                     item.count,
-                                    1
+                                    1,
                                   )
                                 }
                                 disabled={item.count >= item.product.stock}

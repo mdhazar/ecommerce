@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import api from "../api/api";
+import api from "@/api/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,7 +25,7 @@ function SignUpContent() {
         setRoles(response.data);
 
         const storeRole = response.data.find(
-          (role) => role.name.toLowerCase() === "mağaza"
+          (role) => role.name.toLowerCase() === "mağaza",
         );
         if (storeRole) {
           setStoreRoleId(storeRole.id);
@@ -33,7 +33,7 @@ function SignUpContent() {
         }
 
         const customerRole = response.data.find(
-          (role) => role.name.toLowerCase() === "müşteri"
+          (role) => role.name.toLowerCase() === "müşteri",
         );
         if (customerRole) {
           setSelectedRole(customerRole.id);
@@ -85,7 +85,7 @@ function SignUpContent() {
         setIsSubmitting(false);
         console.log("Signup successful:", response.data); // Debug
         toast.success(
-          "Signup successful! You need to click the link in the email to activate your account. Please check your inbox and spam folder if you don't see it!"
+          "Signup successful! You need to click the link in the email to activate your account. Please check your inbox and spam folder if you don't see it!",
         );
       })
       .catch((error) => {

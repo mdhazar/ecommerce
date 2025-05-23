@@ -51,7 +51,7 @@ const ShopProducts = () => {
     const productGender = category.gender;
 
     history.push(
-      `/shop/${productGender}/${categoryName}/${category.id}/${productNameSlug}/${product.id}`
+      `/shop/${productGender}/${categoryName}/${category.id}/${productNameSlug}/${product.id}`,
     );
   };
 
@@ -167,7 +167,7 @@ const ShopProducts = () => {
               >
                 {pageNumber}
               </button>
-            )
+            ),
         )}
 
         <button

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { setAddress } from "@/redux/actions/shoppingCartActions";
 import { useForm } from "react-hook-form";
-import api from "../api/api";
+import api from "@/api/api";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";

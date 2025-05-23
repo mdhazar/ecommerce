@@ -8,7 +8,7 @@ const initialState = {
   loading: false,
   categories: [],
   productList: [],
-  currentProduct: null, // Add this for single product view
+  currentProduct: null,
   total: 0,
   limit: 25,
   offset: 0,

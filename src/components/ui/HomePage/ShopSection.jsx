@@ -1,5 +1,5 @@
 import React from "react";
-import cover2 from "../../assets/cover2.png";
+import cover2 from "@/assets/cover2.png";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -8,7 +8,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/components/ui/common/Carousel";
 
 const ProductCard = ({ image, title, description, price }) => {
   return (

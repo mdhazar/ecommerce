@@ -1,6 +1,6 @@
-import Footer from "@/layouts/footer";
+import Footer from "@/layouts/Footer";
 
-import Navbar from "@/layouts/navbar";
+import Navbar from "@/layouts/Navbar";
 import LoginPageContent from "@/layouts/OrderPageContent";
 
 import React from "react";

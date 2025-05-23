@@ -1,10 +1,10 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import OrderSummary from "@/components/ui/orderSummary";
-import Footer from "@/layouts/footer";
-import Navbar from "@/layouts/navbar";
-import CardList from "@/components/ui/CardList";
-import CardForm from "@/components/ui/CardForm";
+import OrderSummary from "@/components/ui/PaymentPage/OrderSummary";
+import Footer from "@/layouts/Footer";
+import Navbar from "@/layouts/Navbar";
+import CardList from "@/components/ui/PaymentPage/CardList";
+import CardForm from "@/components/ui/PaymentPage/CardForm";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import api from "@/api/api";
@@ -32,7 +32,21 @@ function Payment() {
       const response = await api.get("/user/card");
       setCards(response.data);
     } catch (error) {
-      toast.error("Failed to fetch cards");
+      console.error("Error fetching cards:", error);
+      if (error.response) {
+        toast.error(
+          error.response.data?.message ||
+            "Failed to fetch cards. Please try again.",
+        );
+      } else if (error.request) {
+        toast.error(
+          "No response from server. Please check your internet connection.",
+        );
+      } else {
+        toast.error(
+          "An error occurred while fetching cards. Please try again.",
+        );
+      }
     }
   };
 
@@ -49,7 +63,11 @@ function Payment() {
       setShowCardForm(false);
       setEditingCard(null);
     } catch (error) {
-      toast.error("Failed to save card");
+      console.error("Error saving card:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to save card. Please try again.",
+      );
     }
   };
 
@@ -60,7 +78,11 @@ function Payment() {
         toast.success("Card deleted successfully");
         fetchCards();
       } catch (error) {
-        toast.error("Failed to delete card");
+        console.error("Error deleting card:", error);
+        toast.error(
+          error.response?.data?.message ||
+            "Failed to delete card. Please try again.",
+        );
       }
     }
   };
@@ -86,7 +108,7 @@ function Payment() {
 
       const totalPrice = selectedItems.reduce(
         (sum, item) => sum + item.product.price * item.count,
-        0
+        0,
       );
 
       const orderPayload = {
@@ -111,7 +133,7 @@ function Payment() {
 
       if (response.data) {
         toast.success(
-          "🎉 Congratulations! Your order has been successfully placed!"
+          "🎉 Congratulations! Your order has been successfully placed!",
         );
         confetti({
           particleCount: 100,
@@ -128,7 +150,7 @@ function Payment() {
       console.error("Order placement error:", error);
       toast.error(
         error.response?.data?.message ||
-          "Failed to place order. Please try again."
+          "Failed to place order. Please try again.",
       );
     }
   };

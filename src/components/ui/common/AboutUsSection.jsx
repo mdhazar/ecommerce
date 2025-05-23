@@ -1,5 +1,5 @@
 import React from "react";
-import about from "../../assets/about1.png";
+import about from "@/assets/about1.png";
 export default function AboutUsSection1() {
   return (
     <section className="flex flex-col lg:flex-row items-center min-h-screen bg-[#2A7CC7] text-white">

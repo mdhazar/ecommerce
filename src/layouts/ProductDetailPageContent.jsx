@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProduct } from "../redux/thunks/productThunks";
-import { addToCart } from "../redux/actions/shoppingCartActions";
+import { fetchProduct } from "@/redux/thunks/productThunks";
+import { addToCart } from "@/redux/actions/shoppingCartActions";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -12,7 +12,7 @@ const ProductDetailPageContent = () => {
   const history = useHistory();
   const [quantity, setQuantity] = useState(1);
   const { currentProduct, loading, error } = useSelector(
-    (state) => state.product
+    (state) => state.product,
   );
 
   useEffect(() => {

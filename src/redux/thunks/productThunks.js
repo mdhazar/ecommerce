@@ -29,7 +29,7 @@ export const fetchProduct = (productId) => {
       dispatch(fetchProductsSuccess([response.data], 1));
     } catch (error) {
       dispatch(
-        fetchProductsFailure(error.message || "Failed to fetch product")
+        fetchProductsFailure(error.message || "Failed to fetch product"),
       );
     }
   };

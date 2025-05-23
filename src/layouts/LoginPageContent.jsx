@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../redux/thunks/authThunks";
+import { loginUser } from "@/redux/thunks/authThunks";
 import { useHistory, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -23,7 +23,7 @@ const LoginPageContent = () => {
     } catch (error) {
       console.error("Login error:", error);
       toast.error(
-        error.response?.data?.message || "Login failed. Please try again."
+        error.response?.data?.message || "Login failed. Please try again.",
       );
     } finally {
       setIsLoading(false);

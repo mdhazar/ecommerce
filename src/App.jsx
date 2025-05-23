@@ -14,12 +14,12 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/LoginPage";
 import { fetchCategories } from "./redux/thunks/categoryThunks";
 import ProductDetailPage from "./pages/ProductDetailPage";
-import ShoppingCartPage from "./components/ui/shoppingPageCartComponent";
 import { loadCartFromStorage } from "./redux/actions/shoppingCartActions";
+import ShoppingCartPage from "./components/ui/ProductDetailPage/ShoppingPageCartComponent";
 import OrderPage from "./pages/OrderPage";
 import Payment from "./pages/PaymentPage";
-import ProtectedRoute from "./components/ui/protectedRoute";
-import PreviousOrdersPage from "./pages/PreviousOrdersPage";
+import ProtectedRoute from "./components/ui/layout/ProtectedRoute";
+import PreviousOrdersPage from "@/pages/PreviousOrdersPage";
 
 function App() {
   const dispatch = useDispatch();

@@ -1,5 +1,5 @@
 import React from "react";
-import couple from "../../assets/coupleWithScarf.png";
+import couple from "@/assets/coupleWithScarf.png";
 
 function BuySection() {
   return (

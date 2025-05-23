@@ -1,7 +1,7 @@
 import React from "react";
-import featuredProduct1 from "../../assets/featuredProduct1.png";
-import featuredProduct2 from "../../assets/featuredProduct2.png";
-import featuredProduct3 from "../../assets/featuredProduct3.png";
+import featuredProduct1 from "@/assets/featuredProduct1.png";
+import featuredProduct2 from "@/assets/featuredProduct2.png";
+import featuredProduct3 from "@/assets/featuredProduct3.png";
 const products = [
   {
     id: 1,

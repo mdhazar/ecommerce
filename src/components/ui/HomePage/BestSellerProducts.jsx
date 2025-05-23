@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import bestSellerImage from "../../assets/bestSellerProduct1.png";
+import bestSellerImage from "@/assets/bestSellerProduct1.png";
 
 const initialProducts = [
   {

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { ChevronDown, ChevronUp } from "lucide-react";
 import api from "@/api/api";
-import Navbar from "@/layouts/navbar";
-import Footer from "@/layouts/footer";
+import Navbar from "@/layouts/Navbar";
+import Footer from "@/layouts/Footer";
 import { toast } from "react-toastify";
 
 const OrderDetails = ({ products }) => (

@@ -1,4 +1,3 @@
-// components/ui/CartDropdown.jsx
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -7,7 +6,7 @@ import {
   updateCartItem,
   removeFromCart,
   toggleCartItem,
-} from "../../redux/actions/shoppingCartActions";
+} from "@/redux/actions/shoppingCartActions";
 
 const CartDropdown = ({ isOpen, onClose }) => {
   const cart = useSelector((state) => state.shoppingCart.cart);

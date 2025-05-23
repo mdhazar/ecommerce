@@ -1,11 +1,11 @@
 import React from "react";
-import Header from "../layouts/header";
-import Navbar from "../layouts/navbar";
-import Footer from "../layouts/footer";
-import ProductCardInfo from "../components/ui/ProductCardInfo";
-import BestSellerProducts from "../components/ui/BestSellerProducts";
-import ShopPageBrandIcons from "../components/ui/ShopPageBrandIcons";
-import ProductDetailPageContent from "../layouts/ProductDetailPageContent";
+import Header from "@/layouts/Header";
+import Navbar from "@/layouts/Navbar";
+import Footer from "@/layouts/Footer";
+import ProductCardInfo from "@/components/ui/ProductDetailPage/ProductCardInfo";
+import BestSellerProducts from "@/components/ui/HomePage/BestSellerProducts";
+import ShopPageBrandIcons from "@/components/ui/ProductDetailPage/ShopPageBrandIcons";
+import ProductDetailPageContent from "@/layouts/ProductDetailPageContent";
 
 function ProductDetailPage() {
   return (

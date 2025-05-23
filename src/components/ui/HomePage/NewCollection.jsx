@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/common/Card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Carousel,
@@ -7,8 +7,8 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
-import productSlide1 from "../../assets/productSlide1.jpg";
+} from "@/components/ui/common/Carousel";
+import productSlide1 from "@/assets/productSlide1.jpg";
 
 const collections = [
   {
