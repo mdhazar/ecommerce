@@ -2,13 +2,13 @@ import {
   FETCH_PRODUCTS_REQUEST,
   FETCH_PRODUCTS_SUCCESS,
   FETCH_PRODUCTS_FAILURE,
-} from "../actions/productActionTypes";
+} from "@/actions/productActionTypes";
 
 const initialState = {
   loading: false,
   categories: [],
   productList: [],
-  currentProduct: null, // Add this for single product view
+  currentProduct: null,
   total: 0,
   limit: 25,
   offset: 0,

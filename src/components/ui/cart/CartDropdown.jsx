@@ -6,7 +6,7 @@ import {
   updateCartItem,
   removeFromCart,
   toggleCartItem,
-} from "../../redux/actions/shoppingCartActions";
+} from "@/redux/actions/shoppingCartActions";
 
 const CartDropdown = ({ isOpen, onClose }) => {
   const cart = useSelector((state) => state.shoppingCart.cart);

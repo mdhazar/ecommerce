@@ -1,5 +1,5 @@
-import api from "../../api/api";
-import { setCategories } from "../actions/categoryActions";
+import api from "@/api/api";
+import { setCategories } from "@/actions/categoryActions";
 import { toast } from "react-toastify";
 
 export const fetchCategories = () => {

@@ -1,4 +1,4 @@
-import { setRoles } from "../actions/clientActions";
+import { setRoles } from "@/actions/clientActions";
 
 const fetchRolesFromAPI = () => {
   return new Promise((resolve) => {
