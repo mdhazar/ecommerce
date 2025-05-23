@@ -8,7 +8,7 @@ import {
   TOGGLE_CART_ITEM,
   LOAD_CART_FROM_STORAGE,
   CLEAR_CART,
-} from "@/actions/shoppingCartActions";
+} from "../actions/shoppingCartActions";
 
 const initialState = {
   cart: [],

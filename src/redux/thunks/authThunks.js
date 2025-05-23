@@ -1,5 +1,5 @@
-import api from "@/api/api";
-import { setUser } from "@/actions/clientActions";
+import api from "../../api/api";
+import { setUser } from "../actions/clientActions";
 import { toast } from "react-toastify";
 import md5 from "md5";
 

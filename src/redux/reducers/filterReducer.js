@@ -1,4 +1,4 @@
-import { SET_FILTER_PARAMS } from "@/actions/filterActions";
+import { SET_FILTER_PARAMS } from "../actions/filterActions";
 
 const initialState = {
   filter: "",

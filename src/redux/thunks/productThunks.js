@@ -1,9 +1,9 @@
-import api from "@/api/api";
+import api from "../../api/api";
 import {
   fetchProductsRequest,
   fetchProductsSuccess,
   fetchProductsFailure,
-} from "@/actions/productActions";
+} from "../actions/productActions";
 
 export const fetchProducts = (params) => {
   return async (dispatch) => {
