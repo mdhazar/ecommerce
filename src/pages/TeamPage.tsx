@@ -1,0 +1,22 @@
+import React from "react";
+import NavBar from "../layouts/Navbar";
+import Footer from "../layouts/Footer";
+import TeamSection1 from "../components/ui/TeamPage/TeamSection1";
+import TeamSection2 from "../components/ui/TeamPage/TeamSection2";
+import TeamSection3 from "../components/ui/TeamPage/TeamSection3";
+import TeamSection4 from "../components/ui/TeamPage/TeamSection4";
+
+const TeamPage: React.FC = () => {
+  return (
+    <div>
+      <NavBar />
+      <TeamSection1 />
+      <TeamSection2 />
+      <TeamSection3 />
+      <TeamSection4 />
+      <Footer />
+    </div>
+  );
+};
+
+export default TeamPage;
