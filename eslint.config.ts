@@ -4,9 +4,9 @@ import pluginReact from "eslint-plugin-react";
 import prettierPlugin from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
 
-export default [
+const config = [
   {
-    files: ["**/*.{js,mjs,cjs,jsx}"],
+    files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
     languageOptions: {
       globals: globals.browser,
     },
@@ -25,4 +25,6 @@ export default [
   pluginJs.configs.recommended,
   pluginReact.configs.flat.recommended,
   prettierConfig,
-];
+] as const;
+
+export default config;
