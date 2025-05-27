@@ -65,7 +65,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         </label>
         <input
           {...register("title", { required: "Address title is required" })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         />
         {errors.title && (
           <p className="text-red-500 text-sm">{errors.title.message}</p>
@@ -79,7 +79,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           </label>
           <input
             {...register("name", { required: "Name is required" })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
           />
           {errors.name && (
             <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -92,7 +92,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           </label>
           <input
             {...register("surname", { required: "Surname is required" })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
           />
           {errors.surname && (
             <p className="text-red-500 text-sm">{errors.surname.message}</p>
@@ -111,7 +111,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
             },
           })}
           placeholder="05XXXXXXXXX"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         />
         {errors.phone && (
           <p className="text-red-500 text-sm">{errors.phone.message}</p>
@@ -122,7 +122,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         <label className="block text-sm font-medium text-gray-700">City</label>
         <select
           {...register("city", { required: "City is required" })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         >
           <option value="">Select a city</option>
           {cities.map((city) => (
@@ -142,7 +142,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         </label>
         <input
           {...register("district", { required: "District is required" })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         />
         {errors.district && (
           <p className="text-red-500 text-sm">{errors.district.message}</p>
@@ -157,7 +157,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           {...register("neighborhood", {
             required: "Neighborhood is required",
           })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         />
         {errors.neighborhood && (
           <p className="text-red-500 text-sm">{errors.neighborhood.message}</p>
@@ -171,7 +171,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         <textarea
           {...register("address", { required: "Address details are required" })}
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         />
         {errors.address && (
           <p className="text-red-500 text-sm">{errors.address.message}</p>
@@ -182,13 +182,13 @@ const AddressForm: React.FC<AddressFormProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+          className="px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
         >
           Save Address
         </button>

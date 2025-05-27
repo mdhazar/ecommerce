@@ -93,7 +93,7 @@ const PreviousOrdersPage: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-grow flex items-center justify-center">
+        <main className="grow flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </main>
         <Footer />
@@ -104,7 +104,7 @@ const PreviousOrdersPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="grow container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Order History</h1>
 
         {orders.length === 0 ? (

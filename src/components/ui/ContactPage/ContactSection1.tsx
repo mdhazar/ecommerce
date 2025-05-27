@@ -3,7 +3,7 @@ import { FaTwitter, FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const ContactSection1: React.FC = () => {
   return (
-    <div className="mx-auto w-full max-w-screen-2xl md:px-8 lg:px-32 xl:px-56 2xl:px-96 py-16 flex flex-col items-center justify-center text-center">
+    <div className="mx-auto w-full max-w-(--breakpoint-2xl) md:px-8 lg:px-32 xl:px-56 2xl:px-96 py-16 flex flex-col items-center justify-center text-center">
       <div className="flex flex-col mb-6">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Get answers to all your questions.

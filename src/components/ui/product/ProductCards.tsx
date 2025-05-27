@@ -106,7 +106,7 @@ const ProductCards: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <button className="bg-[#23A6F0] text-white px-4 py-2 rounded-md flex-grow">
+            <button className="bg-[#23A6F0] text-white px-4 py-2 rounded-md grow">
               Select Options
             </button>
             <button className="p-2 rounded-md border border-gray-300">

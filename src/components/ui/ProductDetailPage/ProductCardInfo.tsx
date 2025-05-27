@@ -131,7 +131,7 @@ const ProductCardInfo: React.FC = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
-        <div className="flex-1 flex-shrink-0">
+        <div className="flex-1 shrink-0">
           {currentProduct.images && currentProduct.images.length > 0 ? (
             <img
               src={currentProduct.images[0].url}

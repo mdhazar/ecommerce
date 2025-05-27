@@ -129,7 +129,7 @@ const Footer: React.FC = () => {
             <form className="flex space-x-2">
               <input
                 type="email"
-                className="flex-grow p-2 border border-[#737373] rounded-md"
+                className="grow p-2 border border-[#737373] rounded-md"
                 placeholder="Your Email"
               />
               <button className="bg-blue-500 text-white px-4 py-2 rounded-md">

@@ -195,7 +195,7 @@ interface CarouselPreviousProps extends React.ComponentProps<typeof Button> {}
 const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
   CarouselPreviousProps
->(({ className, variant = "outline", size = "icon", ...props }, ref) => {
+>(({ className, variant = "outline-solid", size = "icon", ...props }, ref) => {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
   return (
@@ -224,7 +224,7 @@ CarouselPrevious.displayName = "CarouselPrevious";
 interface CarouselNextProps extends React.ComponentProps<typeof Button> {}
 
 const CarouselNext = React.forwardRef<HTMLButtonElement, CarouselNextProps>(
-  ({ className, variant = "outline", size = "icon", ...props }, ref) => {
+  ({ className, variant = "outline-solid", size = "icon", ...props }, ref) => {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
 
     return (

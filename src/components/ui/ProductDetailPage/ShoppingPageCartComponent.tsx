@@ -118,7 +118,7 @@ const ShoppingCartPage: React.FC = () => {
           ) : (
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="lg:w-2/3">
-                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="bg-white rounded-lg shadow-xs overflow-hidden">
                   <div className="min-w-full divide-y divide-gray-200">
                     <div className="bg-gray-50">
                       <div className="grid grid-cols-12 gap-4 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -156,7 +156,7 @@ const ShoppingCartPage: React.FC = () => {
                                 "/placeholder.png"
                               }
                               alt={item.product.name}
-                              className="h-16 w-16 object-cover rounded-lg shadow-sm"
+                              className="h-16 w-16 object-cover rounded-lg shadow-xs"
                             />
                           </div>
 
@@ -227,7 +227,7 @@ const ShoppingCartPage: React.FC = () => {
               </div>
 
               <div className="lg:w-1/3">
-                <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
+                <div className="bg-white rounded-lg shadow-xs p-6 sticky top-8">
                   <h2 className="text-xl font-bold mb-6">Order Summary</h2>
 
                   <div className="space-y-4">

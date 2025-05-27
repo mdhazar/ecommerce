@@ -12,7 +12,7 @@ const ProductDetailPage: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
       <Navbar />
-      <main className="flex-grow">
+      <main className="grow">
         <ProductDetailPageContent />
         <ProductCardInfo />
         <BestSellerProducts />

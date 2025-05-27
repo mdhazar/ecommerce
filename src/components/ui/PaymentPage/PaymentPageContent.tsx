@@ -90,7 +90,7 @@ const PaymentPageContent: React.FC<PaymentPageContentProps> = ({
       </div>
 
       {showCardForm ? (
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-xs">
           <h3 className="text-lg font-semibold mb-4">
             {editingCard ? "Edit Card" : "Add New Card"}
           </h3>

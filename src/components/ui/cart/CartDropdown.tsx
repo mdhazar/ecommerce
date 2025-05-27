@@ -86,7 +86,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({ isOpen, onClose }) => {
                     className="mr-4 h-4 w-4 text-[#23A6F0]"
                   />
 
-                  <div className="w-16 h-16 flex-shrink-0">
+                  <div className="w-16 h-16 shrink-0">
                     <img
                       src={item.product.images?.[0]?.url || "/placeholder.png"}
                       alt={item.product.name}
@@ -94,7 +94,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
 
-                  <div className="ml-4 flex-grow">
+                  <div className="ml-4 grow">
                     <h4 className="text-sm font-medium">{item.product.name}</h4>
                     <div className="text-sm text-[#23A6F0] mt-1">
                       ${(item.product.price * item.count).toFixed(2)}

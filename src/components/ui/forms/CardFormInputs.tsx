@@ -32,7 +32,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
             message: "Please enter a valid 16-digit card number",
           },
         })}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         placeholder="1234 1234 1234 1234"
         maxLength={16}
       />
@@ -47,7 +47,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
       </label>
       <input
         {...register("name_on_card", { required: "Name is required" })}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
       />
       {errors.name_on_card && (
         <p className="text-red-500 text-sm">{errors.name_on_card.message}</p>
@@ -61,7 +61,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
         </label>
         <select
           {...register("expire_month", { required: "Month is required" })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         >
           <option value="">Select Month</option>
           {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
@@ -81,7 +81,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
         </label>
         <select
           {...register("expire_year", { required: "Year is required" })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
         >
           <option value="">Select Year</option>
           {years.map((year) => (
