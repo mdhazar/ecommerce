@@ -1,10 +1,16 @@
-import api from "../../api/api";
 import { setUser } from "../actions/clientActions";
 import { toast } from "react-toastify";
 import md5 from "md5";
+import { LoginData, History, Location, User } from "../types";
+import { Dispatch } from "redux";
+import api from "../../api/api";
 
-export const loginUser = (data, history, location) => {
-  return async (dispatch) => {
+export const loginUser = (
+  data: LoginData,
+  history: History,
+  location: Location
+) => {
+  return async (dispatch: Dispatch) => {
     try {
       const response = await api.post("/login", {
         email: data.email,
@@ -16,7 +22,7 @@ export const loginUser = (data, history, location) => {
       const emailHash = md5(data.email.trim().toLowerCase());
       const gravatarUrl = `https://www.gravatar.com/avatar/${emailHash}`;
 
-      const user = {
+      const user: User = {
         ...userInfo,
         gravatarUrl,
       };
@@ -30,9 +36,8 @@ export const loginUser = (data, history, location) => {
 
         api.defaults.headers.common["Authorization"] = userInfo.token;
       }
-
       const { from } = location.state || { from: { pathname: "/" } };
-      history.replace(from);
+      history.replace(from.pathname);
     } catch (error) {
       toast.error("Login failed. Please check your credentials.");
     }
@@ -40,7 +45,7 @@ export const loginUser = (data, history, location) => {
 };
 
 export const verifyToken = () => {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -54,7 +59,7 @@ export const verifyToken = () => {
         const emailHash = md5(userInfo.email.trim().toLowerCase());
         const gravatarUrl = `https://www.gravatar.com/avatar/${emailHash}`;
 
-        const user = {
+        const user: User = {
           ...userInfo,
           gravatarUrl,
         };
@@ -71,7 +76,7 @@ export const verifyToken = () => {
         localStorage.removeItem("token");
         delete api.defaults.headers.common["Authorization"];
 
-        dispatch(setUser({}));
+        dispatch(setUser({} as User));
 
         toast.error("Session expired. Please log in again.");
       }

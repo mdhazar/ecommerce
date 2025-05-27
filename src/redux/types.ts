@@ -1,13 +1,13 @@
 // Common Types
 export interface User {
-  id?: string;
   email: string;
-  name?: string;
+  token?: string;
   gravatarUrl?: string;
+  [key: string]: any;
 }
 
 export interface Product {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
   description: string;
@@ -15,6 +15,7 @@ export interface Product {
   sell_count: number;
   rating: number;
   images: ProductImage[];
+  [key: string]: any;
 }
 
 export interface ProductImage {
@@ -22,10 +23,12 @@ export interface ProductImage {
 }
 
 export interface Category {
-  id: number;
+  id: string | number;
+  name: string;
   gender: string;
   code: string;
   title: string;
+  [key: string]: any;
 }
 
 export interface CartItem {
@@ -49,9 +52,9 @@ export interface Address {
 // State Types
 export interface ClientState {
   user: User;
-  addressList: Address[];
-  creditCards: any[]; // TODO: Define credit card type
-  roles: any[]; // TODO: Define role type
+  addressList: any[];
+  creditCards: any[];
+  roles: string[];
   theme: string;
   language: string;
 }
@@ -65,7 +68,7 @@ export interface ProductState {
   limit: number;
   offset: number;
   filter: string;
-  fetchState: "NOT_FETCHED" | "FETCHING" | "FETCHED" | "ERROR";
+  fetchState: string;
   error: string;
 }
 
@@ -76,8 +79,8 @@ export interface FilterState {
 
 export interface ShoppingCartState {
   cart: CartItem[];
-  payment: any; // TODO: Define payment type
-  address: Address | null;
+  payment: Record<string, any>;
+  address: any | null;
 }
 
 export interface CategoryState {
@@ -109,3 +112,21 @@ export type ThunkAction<R, S, E, A extends Action> = (
 export type ThunkDispatch<S, E, A extends Action> = (
   action: A | ThunkAction<any, S, E, A>
 ) => any;
+
+export interface LoginData {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+export interface History {
+  replace: (path: string) => void;
+}
+
+export interface Location {
+  state?: {
+    from: {
+      pathname: string;
+    };
+  };
+}

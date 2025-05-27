@@ -1,12 +1,12 @@
-import { createStore, applyMiddleware, combineReducers } from "redux";
-import { thunk } from "redux-thunk";
+import { combineReducers } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 import filterReducer from "./reducers/filterReducer";
 import clientReducer from "./reducers/clientReducer";
-import productReducer from "./reducers/productReducer";
-import shoppingCartReducer from "./reducers/shoppingCartReducer";
 import categoryReducer from "./reducers/categoryReducer";
 import { RootState } from "./types";
+import productReducer from "./reducers/productReducer";
+import shoppingCartReducer from "./reducers/shoppingCartReducer";
 
 const rootReducer = combineReducers({
   client: clientReducer,
@@ -16,9 +16,11 @@ const rootReducer = combineReducers({
   category: categoryReducer,
 });
 
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+});
+
 export type AppDispatch = typeof store.dispatch;
-export { RootState };
-
-const store = createStore(rootReducer, applyMiddleware(thunk, logger));
-
+export type { RootState };
 export default store;

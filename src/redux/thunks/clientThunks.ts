@@ -1,6 +1,7 @@
 import { setRoles } from "../actions/clientActions";
+import { Dispatch } from "redux";
 
-const fetchRolesFromAPI = () => {
+const fetchRolesFromAPI = (): Promise<string[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(["admin", "user", "guest"]);
@@ -9,7 +10,7 @@ const fetchRolesFromAPI = () => {
 };
 
 export const fetchRolesIfNeeded = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch: Dispatch, getState: () => any) => {
     const { roles } = getState().client;
 
     if (roles.length === 0) {
