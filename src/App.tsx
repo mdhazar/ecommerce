@@ -7,7 +7,6 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  RouteComponentProps,
 } from "react-router-dom";
 import { verifyToken } from "./redux/thunks/authThunks";
 import TeamPage from "./pages/TeamPage";
@@ -56,25 +55,25 @@ const App: React.FC = () => {
         <Route exact path="/about" component={AboutUs} />
         <Route
           path="/order"
-          render={(props: RouteComponentProps) => (
+          render={() => (
             <ProtectedRoute>
-              <OrderPage {...props} />
+              <OrderPage />
             </ProtectedRoute>
           )}
         />
         <Route
           path="/orders"
-          render={(props: RouteComponentProps) => (
+          render={() => (
             <ProtectedRoute>
-              <PreviousOrdersPage {...props} />
+              <PreviousOrdersPage />
             </ProtectedRoute>
           )}
         />
         <Route
           path="/payment"
-          render={(props: RouteComponentProps) => (
+          render={() => (
             <ProtectedRoute>
-              <Payment {...props} />
+              <Payment />
             </ProtectedRoute>
           )}
         />

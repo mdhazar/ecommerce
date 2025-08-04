@@ -41,13 +41,14 @@ const collections: Collection[] = [
 
 const NewCollection: React.FC = () => {
   return (
-    <Carousel className="w-full h-screen">
+    <div className="flex justify-center items-center w-full">
+      <Carousel className="w-full max-w-[95%]  ">
       <CarouselContent>
         {collections.map((collection, index) => (
           <CarouselItem key={index}>
             <Card className="border-none">
               <CardContent className="p-0">
-                <div className="relative h-screen flex items-center justify-center text-white">
+                <div className="relative h-screen max-h-[80%] flex items-center justify-center text-white">
                   <div className="absolute inset-0 z-0">
                     <img
                       src={collection.image}
@@ -82,6 +83,7 @@ const NewCollection: React.FC = () => {
         <ChevronRight className="h-6 w-6 text-white" />
       </CarouselNext>
     </Carousel>
+    </div>
   );
 };
 
