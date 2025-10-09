@@ -2,7 +2,16 @@
 
 This is a full-stack e-commerce web application built with React, Redux, Tailwind CSS, and Node.js. It provides a seamless shopping experience for users, allowing them to browse products, add items to the cart, place orders, and manage their account.
 
+# Note:
+
+You can use public users below ( Password: 123456 )
+
+- customer@commerce.com
+- store@commerce.com
+- admin@commerce.com
+
 ## Features
+
 - User registration and authentication
 - Product browsing and search functionality
 - Product categories and filtering
@@ -12,7 +21,9 @@ This is a full-stack e-commerce web application built with React, Redux, Tailwin
 - Address and payment card management
 - Admin dashboard for managing products, orders, and users
 - Responsive design for optimal viewing on different devices
+
 ## Technologies Used
+
 ### Frontend
 
 - React
@@ -31,6 +42,7 @@ This is a full-stack e-commerce web application built with React, Redux, Tailwin
 - Embla Carousel
 
 ## API Integration
+
 The application integrates with a RESTful API for:
 
 - User authentication
