@@ -2,13 +2,13 @@
 
 This is a full-stack e-commerce web application built with React, Redux, Tailwind CSS, and Node.js. It provides a seamless shopping experience for users, allowing them to browse products, add items to the cart, place orders, and manage their account.
 
-# Note:
+## Note
 
 You can use public users below ( Password: 123456 )
 
-- customer@commerce.com
-- store@commerce.com
-- admin@commerce.com
+- <customer@commerce.com>
+- <store@commerce.com>
+- <admin@commerce.com>
 
 ## Features
 
