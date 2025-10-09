@@ -1,7 +1,7 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { type AxiosInstance } from "axios";
 
 const api: AxiosInstance = axios.create({
-  baseURL: "https://workintech-fe-ecommerce.onrender.com",
+	baseURL: "https://workintech-fe-ecommerce.onrender.com",
 });
 
 export default api;

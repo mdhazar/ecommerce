@@ -1,8 +1,8 @@
-import { Category } from "../types";
+import type { Category } from "../types";
 
 export const SET_CATEGORIES = "SET_CATEGORIES";
 
 export const setCategories = (categories: Category[]) => ({
-  type: SET_CATEGORIES,
-  payload: categories,
+	type: SET_CATEGORIES,
+	payload: categories,
 });
