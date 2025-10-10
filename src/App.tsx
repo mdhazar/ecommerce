@@ -2,12 +2,7 @@ import type React from "react";
 import { useEffect } from "react";
 import "./App.css";
 import { useDispatch } from "react-redux";
-import {
-	Route,
-	type RouteComponentProps,
-	BrowserRouter as Router,
-	Switch,
-} from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import AboutUs from "./pages/AboutUs";
 import ContactPage from "./pages/ContactPage";
@@ -57,25 +52,25 @@ const App: React.FC = () => {
 				<Route exact path="/about" component={AboutUs} />
 				<Route
 					path="/order"
-					render={(props: RouteComponentProps) => (
+					render={() => (
 						<ProtectedRoute>
-							<OrderPage {...props} />
+							<OrderPage />
 						</ProtectedRoute>
 					)}
 				/>
 				<Route
 					path="/orders"
-					render={(props: RouteComponentProps) => (
+					render={() => (
 						<ProtectedRoute>
-							<PreviousOrdersPage {...props} />
+							<PreviousOrdersPage />
 						</ProtectedRoute>
 					)}
 				/>
 				<Route
 					path="/payment"
-					render={(props: RouteComponentProps) => (
+					render={() => (
 						<ProtectedRoute>
-							<Payment {...props} />
+							<Payment />
 						</ProtectedRoute>
 					)}
 				/>
