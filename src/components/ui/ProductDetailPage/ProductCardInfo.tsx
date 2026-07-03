@@ -1,140 +1,113 @@
 import { useParams } from "@tanstack/react-router";
 import type React from "react";
 import { useState } from "react";
+import { Container, Section } from "@/components/ui/common/Layout";
+import { cn } from "@/lib/utils";
+import { useCategories } from "@/queries/categories";
 import { useProduct } from "@/queries/products";
 
-type TabContent = Record<string, React.ReactNode>;
+type TabId = "description" | "details" | "shipping";
+
+const TABS: { id: TabId; label: string }[] = [
+	{ id: "description", label: "Description" },
+	{ id: "details", label: "Details" },
+	{ id: "shipping", label: "Shipping & returns" },
+];
 
 const ProductCardInfo: React.FC = () => {
-	const [activeTab, setActiveTab] = useState<string>("description");
+	const [activeTab, setActiveTab] = useState<TabId>("description");
 	const { productId } = useParams({ from: "/product/$productId" });
-	const { data: currentProduct } = useProduct(productId);
+	const { data: product } = useProduct(productId);
+	const { data: categories } = useCategories();
 
-	if (!currentProduct) {
+	if (!product) {
 		return null;
 	}
 
-	const tabContent: TabContent = {
-		description: (
-			<>
-				<div className="flex-1 flex flex-col">
-					<h3 className="font-semibold mb-4">{currentProduct.name}</h3>
-					<p className="text-gray-600 text-sm mb-4">
-						{currentProduct.description}
-					</p>
+	const category = categories?.find((c) => c.id === product.category_id);
 
-					<p className="text-gray-600 text-sm mb-4">Product Features:</p>
-					<ul className="list-disc list-inside text-gray-600 text-sm mb-4">
-						<li>High-quality materials</li>
-						<li>Durable construction</li>
-						<li>Modern design</li>
-						<li>Comfortable fit</li>
-					</ul>
-				</div>
-
-				<div className="flex-1 flex flex-col mb-6">
-					<h3 className="text-xl font-semibold mb-4">Product Highlights</h3>
-					<ul className="flex flex-col space-y-2">
-						<li className="flex items-center space-x-2">
-							<span>›</span>
-							<span>Rating: {currentProduct.rating} out of 5</span>
-						</li>
-						<li className="flex items-center space-x-2">
-							<span>›</span>
-							<span>Total Sales: {currentProduct.sell_count} units</span>
-						</li>
-						<li className="flex items-center space-x-2">
-							<span>›</span>
-							<span>Stock Available: {currentProduct.stock} units</span>
-						</li>
-						<li className="flex items-center space-x-2">
-							<span>›</span>
-							<span>Price: ${currentProduct.price.toFixed(2)}</span>
-						</li>
-					</ul>
-				</div>
-			</>
-		),
-		additional: (
-			<div className="flex-1">
-				<table className="w-full">
-					<tbody className="divide-y">
-						<tr className="py-2">
-							<td className="py-2 font-semibold text-gray-600 w-1/3">SKU</td>
-							<td className="py-2 text-gray-600">PRD-{currentProduct.id}</td>
-						</tr>
-						<tr>
-							<td className="py-2 font-semibold text-gray-600">Category</td>
-							<td className="py-2 text-gray-600">
-								ID: {currentProduct.category_id}
-							</td>
-						</tr>
-						<tr>
-							<td className="py-2 font-semibold text-gray-600">Store</td>
-							<td className="py-2 text-gray-600">
-								ID: {currentProduct.store_id}
-							</td>
-						</tr>
-						<tr>
-							<td className="py-2 font-semibold text-gray-600">Stock Status</td>
-							<td className="py-2 text-gray-600">
-								{currentProduct.stock > 0 ? "In Stock" : "Out of Stock"}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		),
-		reviews: (
-			<div className="flex-1 text-center py-8">
-				<p className="text-gray-600">No reviews yet.</p>
-				<button className="mt-4 text-blue-600 hover:text-blue-700">
-					Be the first to write a review
-				</button>
-			</div>
-		),
-	};
+	const details: { label: string; value: string }[] = [
+		category ? { label: "Collection", value: category.title } : null,
+		{ label: "Rating", value: `${product.rating.toFixed(1)} out of 5` },
+		{ label: "Sold", value: `${product.sell_count} sold` },
+		{
+			label: "Availability",
+			value: product.stock > 0 ? "In stock" : "Currently sold out",
+		},
+	].filter((row): row is { label: string; value: string } => row !== null);
 
 	return (
-		<div className="container mx-auto p-4">
-			<div className="flex justify-start space-x-4 mb-4 border-b">
-				{[
-					{ id: "description", label: "Description" },
-					{ id: "additional", label: "Additional Information" },
-					{ id: "reviews", label: "Reviews (0)" },
-				].map((tab) => (
-					<button
-						key={tab.id}
-						onClick={() => setActiveTab(tab.id)}
-						className={`py-2 px-4 -mb-px ${
-							activeTab === tab.id
-								? "border-b-2 border-blue-500 text-blue-600 font-semibold"
-								: "text-gray-600 hover:text-gray-900"
-						}`}
-					>
-						{tab.label}
-					</button>
-				))}
-			</div>
-
-			<div className="flex flex-col lg:flex-row gap-6 mb-6">
-				<div className="flex-1 shrink-0">
-					{currentProduct.images && currentProduct.images.length > 0 ? (
-						<img
-							src={currentProduct.images[0].url}
-							alt={currentProduct.name}
-							className="object-cover w-full rounded-lg shadow-md"
-						/>
-					) : (
-						<div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-							<span className="text-gray-500">No Image Available</span>
-						</div>
-					)}
+		<Section className="border-t border-border py-12 md:py-16">
+			<Container>
+				<div
+					className="flex flex-wrap gap-6 border-b border-border"
+					role="tablist"
+				>
+					{TABS.map((tab) => (
+						<button
+							type="button"
+							key={tab.id}
+							role="tab"
+							onClick={() => setActiveTab(tab.id)}
+							aria-selected={activeTab === tab.id}
+							className={cn(
+								"-mb-px border-b-2 pb-3 font-sans text-sm font-medium uppercase tracking-[0.12em] transition-colors",
+								activeTab === tab.id
+									? "border-primary text-foreground"
+									: "border-transparent text-muted-foreground hover:text-foreground",
+							)}
+						>
+							{tab.label}
+						</button>
+					))}
 				</div>
 
-				{tabContent[activeTab]}
-			</div>
-		</div>
+				<div className="mt-8 max-w-3xl">
+					{activeTab === "description" ? (
+						<div className="space-y-4">
+							<h3 className="text-xl">About {product.name}</h3>
+							<p className="leading-relaxed text-muted-foreground">
+								{product.description}
+							</p>
+						</div>
+					) : null}
+
+					{activeTab === "details" ? (
+						<dl className="divide-y divide-border">
+							{details.map((row) => (
+								<div
+									key={row.label}
+									className="flex items-center justify-between gap-6 py-3"
+								>
+									<dt className="font-sans text-sm uppercase tracking-[0.12em] text-muted-foreground">
+										{row.label}
+									</dt>
+									<dd className="text-sm font-medium text-foreground">
+										{row.value}
+									</dd>
+								</div>
+							))}
+						</dl>
+					) : null}
+
+					{activeTab === "shipping" ? (
+						<div className="space-y-4 leading-relaxed text-muted-foreground">
+							<p>
+								Complimentary carbon-neutral shipping on every order over $75.
+								Orders are carefully packed and dispatched within one to two
+								business days, with delivery typically arriving in three to
+								five.
+							</p>
+							<p>
+								Not quite right? Return unworn pieces within 30 days for a full
+								refund. We include a prepaid label with every order, so sending
+								something back is simple and free.
+							</p>
+						</div>
+					) : null}
+				</div>
+			</Container>
+		</Section>
 	);
 };
 

@@ -28,6 +28,7 @@ describe("cardSchema", () => {
 		name_on_card: "A B",
 		expire_month: "01",
 		expire_year: "2030",
+		cvv: "123",
 	};
 
 	it("accepts a 16-digit card number", () => {

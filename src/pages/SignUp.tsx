@@ -1,16 +1,11 @@
 import type React from "react";
-import Footer from "../layouts/Footer";
-import Header from "../layouts/Header";
-import SignUpContent from "../layouts/SignUpContent";
+import AuthLayout from "@/layouts/AuthLayout";
+import SignUpContent from "@/layouts/SignUpContent";
 
-const SignUp: React.FC = () => {
-	return (
-		<div>
-			<Header />
-			<SignUpContent />
-			<Footer />
-		</div>
-	);
-};
+const SignUp: React.FC = () => (
+	<AuthLayout>
+		<SignUpContent />
+	</AuthLayout>
+);
 
 export default SignUp;

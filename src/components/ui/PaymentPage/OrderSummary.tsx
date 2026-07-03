@@ -1,4 +1,9 @@
+import { ShieldCheck, Truck, Undo2 } from "lucide-react";
 import type React from "react";
+import { Button } from "@/components/ui/common";
+import { cartTotals, FREE_SHIPPING_THRESHOLD, SHIPPING_FLAT } from "@/lib/cart";
+import { formatPrice } from "@/lib/format";
+import { onImageError, productImage } from "@/lib/images";
 import { useCartStore } from "@/stores/cart-store";
 
 interface OrderSummaryProps {
@@ -15,133 +20,96 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 	showSecurityBadges = true,
 }) => {
 	const cart = useCartStore((state) => state.cart);
-
-	const SHIPPING_FEE = 15;
-	const DISCOUNT_PERCENTAGE = 10;
-
-	const calculateSubtotal = () => {
-		return cart
-			.filter((item) => item.checked)
-			.reduce((total, item) => total + item.product.price * item.count, 0);
-	};
-
-	const subtotal = calculateSubtotal();
-	const shippingCost = subtotal > 0 ? SHIPPING_FEE : 0;
-	const discountAmount = (subtotal * DISCOUNT_PERCENTAGE) / 100;
-	const grandTotal = subtotal + shippingCost - discountAmount;
+	const items = cart.filter((item) => item.checked !== false);
+	const { subtotal, shipping, total } = cartTotals(cart);
 
 	return (
-		<div className="bg-white rounded-lg shadow-xs p-6 sticky top-8">
-			<h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+		<div className="sticky top-24 rounded-lg border border-border bg-card p-6 text-card-foreground shadow-xs">
+			<h2 className="text-xl font-semibold tracking-tight">Order summary</h2>
 
-			<div className="space-y-4 mb-6">
-				{cart
-					.filter((item) => item.checked)
-					.map((item) => (
+			<div className="mt-6 space-y-4">
+				{items.length === 0 ? (
+					<p className="text-sm text-muted-foreground">
+						Your cart is empty. Add a few pieces to continue.
+					</p>
+				) : (
+					items.map((item) => (
 						<div
 							key={item.product.id}
-							className="flex justify-between items-center"
+							className="flex items-center justify-between gap-4"
 						>
-							<div className="flex items-center space-x-4">
+							<div className="flex min-w-0 items-center gap-3">
 								<img
-									src={item.product.images?.[0]?.url || "/placeholder.png"}
+									src={productImage(item.product.images)}
+									onError={onImageError}
 									alt={item.product.name}
-									className="w-16 h-16 object-cover rounded-md"
+									className="size-14 shrink-0 rounded-md border border-border object-cover"
 								/>
-								<div>
-									<p className="font-medium">{item.product.name}</p>
-									<p className="text-sm text-gray-500">
-										Quantity: {item.count}
+								<div className="min-w-0">
+									<p className="truncate text-sm font-medium text-foreground">
+										{item.product.name}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										Qty {item.count}
 									</p>
 								</div>
 							</div>
-							<p className="font-medium">
-								${(item.product.price * item.count).toFixed(2)}
+							<p className="shrink-0 text-sm font-medium text-foreground">
+								{formatPrice(item.product.price * item.count)}
 							</p>
 						</div>
-					))}
+					))
+				)}
 			</div>
 
-			<div className="space-y-3 py-4 border-t border-gray-200">
-				<div className="flex justify-between text-gray-600">
+			<div className="mt-6 space-y-3 border-t border-border pt-6 text-sm">
+				<div className="flex justify-between text-muted-foreground">
 					<span>Subtotal</span>
-					<span>${subtotal.toFixed(2)}</span>
+					<span className="text-foreground">{formatPrice(subtotal)}</span>
 				</div>
-
-				<div className="flex justify-between text-gray-600">
+				<div className="flex justify-between text-muted-foreground">
 					<span>Shipping</span>
-					<span>${shippingCost.toFixed(2)}</span>
+					<span className="text-foreground">
+						{shipping === 0 ? "Free" : formatPrice(shipping)}
+					</span>
 				</div>
-
-				<div className="flex justify-between text-green-600">
-					<span>Discount ({DISCOUNT_PERCENTAGE}%)</span>
-					<span>-${discountAmount.toFixed(2)}</span>
-				</div>
-
-				<div className="pt-4 border-t border-gray-200">
-					<div className="flex justify-between text-lg font-bold">
-						<span>Total</span>
-						<span className="text-blue-600">${grandTotal.toFixed(2)}</span>
-					</div>
+				<div className="flex justify-between border-t border-border pt-3 text-base font-semibold">
+					<span>Total</span>
+					<span>{formatPrice(total)}</span>
 				</div>
 			</div>
 
-			{buttonText && (
-				<button
+			{buttonText ? (
+				<Button
+					type="button"
+					size="lg"
+					className="mt-6 w-full"
 					onClick={onButtonClick}
 					disabled={buttonDisabled}
-					className="w-full mt-6 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
 				>
 					{buttonText}
-				</button>
-			)}
+				</Button>
+			) : null}
 
-			{showSecurityBadges && (
-				<div className="mt-6 space-y-2 text-sm text-gray-500">
+			{showSecurityBadges ? (
+				<div className="mt-6 space-y-2.5 border-t border-border pt-6 text-sm text-muted-foreground">
 					<div className="flex items-center gap-2">
-						<svg
-							className="w-4 h-4 text-green-500"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path
-								fillRule="evenodd"
-								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-								clipRule="evenodd"
-							/>
-						</svg>
-						<span>Secure checkout</span>
+						<ShieldCheck className="size-4 text-success" aria-hidden="true" />
+						<span>Secure, encrypted checkout</span>
 					</div>
 					<div className="flex items-center gap-2">
-						<svg
-							className="w-4 h-4 text-green-500"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path
-								fillRule="evenodd"
-								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-								clipRule="evenodd"
-							/>
-						</svg>
-						<span>Free shipping on orders over $100</span>
+						<Truck className="size-4 text-success" aria-hidden="true" />
+						<span>
+							Free shipping over {formatPrice(FREE_SHIPPING_THRESHOLD)} · flat{" "}
+							{formatPrice(SHIPPING_FLAT)} otherwise
+						</span>
 					</div>
 					<div className="flex items-center gap-2">
-						<svg
-							className="w-4 h-4 text-green-500"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path
-								fillRule="evenodd"
-								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-								clipRule="evenodd"
-							/>
-						</svg>
-						<span>30-day return policy</span>
+						<Undo2 className="size-4 text-success" aria-hidden="true" />
+						<span>30-day easy returns</span>
 					</div>
 				</div>
-			)}
+			) : null}
 		</div>
 	);
 };

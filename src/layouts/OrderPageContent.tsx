@@ -1,35 +1,81 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { Check, MapPin, Plus } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import api from "@/api/api";
+import {
+	Button,
+	Container,
+	Input,
+	Label,
+	PageHeader,
+	Section,
+	Spinner,
+	Textarea,
+} from "@/components/ui/common";
+import OrderSummary from "@/components/ui/PaymentPage/OrderSummary";
+import { cn } from "@/lib/utils";
 import { type AddressFormData, addressSchema } from "@/schemas/address";
 import { useCartStore } from "@/stores/cart-store";
+import type { Address } from "@/types/models";
 
-interface Address {
-	id?: number;
-	title: string;
-	name: string;
-	surname: string;
-	phone: string;
-	city: string;
-	district: string;
-	neighborhood: string;
-	address: string;
-}
+const CheckoutSteps: React.FC<{ current: 1 | 2 | 3 }> = ({ current }) => {
+	const steps = ["Address", "Payment", "Confirmation"];
+	return (
+		<ol className="mx-auto mt-8 flex max-w-xl items-center justify-center gap-2 text-sm">
+			{steps.map((label, index) => {
+				const step = index + 1;
+				const done = step < current;
+				const active = step === current;
+				return (
+					<li key={label} className="flex items-center gap-2">
+						<span
+							className={cn(
+								"flex size-7 items-center justify-center rounded-full border text-xs font-medium",
+								active && "border-primary bg-primary text-primary-foreground",
+								done && "border-primary bg-primary/10 text-primary",
+								!active && !done && "border-border text-muted-foreground",
+							)}
+						>
+							{done ? <Check className="size-4" aria-hidden="true" /> : step}
+						</span>
+						<span
+							className={cn(
+								"font-sans uppercase tracking-[0.15em]",
+								active ? "text-foreground" : "text-muted-foreground",
+							)}
+						>
+							{label}
+						</span>
+						{step < steps.length ? (
+							<span className="mx-1 hidden h-px w-8 bg-border sm:block" />
+						) : null}
+					</li>
+				);
+			})}
+		</ol>
+	);
+};
 
 interface AddressFormProps {
 	onSubmit: (data: AddressFormData) => void;
 	initialData?: Address | null;
 	onCancel: () => void;
+	isSubmitting?: boolean;
 }
+
+const FieldError: React.FC<{ message?: string }> = ({ message }) =>
+	message ? <p className="mt-1.5 text-sm text-destructive">{message}</p> : null;
 
 const AddressForm: React.FC<AddressFormProps> = ({
 	onSubmit,
 	initialData = null,
 	onCancel,
+	isSubmitting = false,
 }) => {
 	const {
 		register,
@@ -38,358 +84,413 @@ const AddressForm: React.FC<AddressFormProps> = ({
 		formState: { errors },
 	} = useForm<AddressFormData>({
 		resolver: zodResolver(addressSchema),
-		defaultValues: initialData || undefined,
+		defaultValues: initialData ?? undefined,
 	});
 
-	const [cities] = useState<string[]>([
-		"Istanbul",
-		"Ankara",
-		"Izmir",
-		"Bursa",
-		"Antalya",
-		"Adana",
-		"Konya",
-		"Gaziantep",
-		"Mersin",
-		"Diyarbakır",
-	]);
+	const titleId = useId();
+	const nameId = useId();
+	const surnameId = useId();
+	const phoneId = useId();
+	const cityId = useId();
+	const districtId = useId();
+	const neighborhoodId = useId();
+	const addressId = useId();
 
 	useEffect(() => {
-		if (initialData) {
-			reset(initialData);
-		}
+		if (initialData) reset(initialData);
 	}, [initialData, reset]);
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+		<form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 			<div>
-				<label className="block text-sm font-medium text-gray-700">
-					Address Title
-				</label>
-				<input
+				<Label htmlFor={titleId}>Address label</Label>
+				<Input
+					id={titleId}
+					placeholder="Home, Work…"
+					aria-invalid={errors.title ? true : undefined}
+					className="mt-1.5"
 					{...register("title")}
-					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
-				{errors.title && (
-					<p className="text-red-500 text-sm">{errors.title.message}</p>
-				)}
+				<FieldError message={errors.title?.message} />
 			</div>
 
-			<div className="grid grid-cols-2 gap-4">
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<div>
-					<label className="block text-sm font-medium text-gray-700">
-						Name
-					</label>
-					<input
+					<Label htmlFor={nameId}>First name</Label>
+					<Input
+						id={nameId}
+						autoComplete="given-name"
+						aria-invalid={errors.name ? true : undefined}
+						className="mt-1.5"
 						{...register("name")}
-						className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 					/>
-					{errors.name && (
-						<p className="text-red-500 text-sm">{errors.name.message}</p>
-					)}
+					<FieldError message={errors.name?.message} />
 				</div>
-
 				<div>
-					<label className="block text-sm font-medium text-gray-700">
-						Surname
-					</label>
-					<input
+					<Label htmlFor={surnameId}>Last name</Label>
+					<Input
+						id={surnameId}
+						autoComplete="family-name"
+						aria-invalid={errors.surname ? true : undefined}
+						className="mt-1.5"
 						{...register("surname")}
-						className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 					/>
-					{errors.surname && (
-						<p className="text-red-500 text-sm">{errors.surname.message}</p>
-					)}
+					<FieldError message={errors.surname?.message} />
 				</div>
 			</div>
 
 			<div>
-				<label className="block text-sm font-medium text-gray-700">Phone</label>
-				<input
+				<Label htmlFor={phoneId}>Phone</Label>
+				<Input
+					id={phoneId}
+					type="tel"
+					autoComplete="tel"
+					placeholder="+1 555 123 4567"
+					aria-invalid={errors.phone ? true : undefined}
+					className="mt-1.5"
 					{...register("phone")}
-					placeholder="05XXXXXXXXX"
-					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
-				{errors.phone && (
-					<p className="text-red-500 text-sm">{errors.phone.message}</p>
-				)}
+				<FieldError message={errors.phone?.message} />
+			</div>
+
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+				<div>
+					<Label htmlFor={cityId}>City</Label>
+					<Input
+						id={cityId}
+						autoComplete="address-level2"
+						aria-invalid={errors.city ? true : undefined}
+						className="mt-1.5"
+						{...register("city")}
+					/>
+					<FieldError message={errors.city?.message} />
+				</div>
+				<div>
+					<Label htmlFor={districtId}>District / State</Label>
+					<Input
+						id={districtId}
+						autoComplete="address-level1"
+						aria-invalid={errors.district ? true : undefined}
+						className="mt-1.5"
+						{...register("district")}
+					/>
+					<FieldError message={errors.district?.message} />
+				</div>
 			</div>
 
 			<div>
-				<label className="block text-sm font-medium text-gray-700">City</label>
-				<select
-					{...register("city")}
-					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
-				>
-					<option value="">Select a city</option>
-					{cities.map((city) => (
-						<option key={city} value={city.toLowerCase()}>
-							{city}
-						</option>
-					))}
-				</select>
-				{errors.city && (
-					<p className="text-red-500 text-sm">{errors.city.message}</p>
-				)}
-			</div>
-
-			<div>
-				<label className="block text-sm font-medium text-gray-700">
-					District
-				</label>
-				<input
-					{...register("district")}
-					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
-				/>
-				{errors.district && (
-					<p className="text-red-500 text-sm">{errors.district.message}</p>
-				)}
-			</div>
-
-			<div>
-				<label className="block text-sm font-medium text-gray-700">
-					Neighborhood
-				</label>
-				<input
+				<Label htmlFor={neighborhoodId}>Neighborhood</Label>
+				<Input
+					id={neighborhoodId}
+					aria-invalid={errors.neighborhood ? true : undefined}
+					className="mt-1.5"
 					{...register("neighborhood")}
-					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
-				{errors.neighborhood && (
-					<p className="text-red-500 text-sm">{errors.neighborhood.message}</p>
-				)}
+				<FieldError message={errors.neighborhood?.message} />
 			</div>
 
 			<div>
-				<label className="block text-sm font-medium text-gray-700">
-					Address Details
-				</label>
-				<textarea
-					{...register("address")}
+				<Label htmlFor={addressId}>Street address</Label>
+				<Textarea
+					id={addressId}
 					rows={3}
-					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
+					placeholder="Street, building, apartment…"
+					aria-invalid={errors.address ? true : undefined}
+					className="mt-1.5"
+					{...register("address")}
 				/>
-				{errors.address && (
-					<p className="text-red-500 text-sm">{errors.address.message}</p>
-				)}
+				<FieldError message={errors.address?.message} />
 			</div>
 
-			<div className="flex justify-end space-x-3">
-				<button
-					type="button"
-					onClick={onCancel}
-					className="px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50"
-				>
+			<div className="flex justify-end gap-3">
+				<Button type="button" variant="outline" onClick={onCancel}>
 					Cancel
-				</button>
-				<button
-					type="submit"
-					className="px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-				>
-					Save Address
-				</button>
+				</Button>
+				<Button type="submit" disabled={isSubmitting}>
+					{initialData ? "Update address" : "Save address"}
+				</Button>
 			</div>
 		</form>
 	);
 };
 
+interface AddressCardProps {
+	address: Address;
+	shippingSelected: boolean;
+	billingSelected: boolean;
+	billingEnabled: boolean;
+	onSelectShipping: () => void;
+	onSelectBilling: () => void;
+	onEdit: () => void;
+	onDelete: () => void;
+}
+
+const AddressCard: React.FC<AddressCardProps> = ({
+	address,
+	shippingSelected,
+	billingSelected,
+	billingEnabled,
+	onSelectShipping,
+	onSelectBilling,
+	onEdit,
+	onDelete,
+}) => (
+	<div
+		className={cn(
+			"rounded-lg border bg-card p-5 text-card-foreground shadow-xs transition-colors",
+			shippingSelected
+				? "border-primary ring-2 ring-primary/30"
+				: "border-border",
+		)}
+	>
+		<div className="flex items-start justify-between gap-3">
+			<div className="flex items-center gap-2">
+				<MapPin className="size-4 text-primary" aria-hidden="true" />
+				<h3 className="font-medium text-foreground">{address.title}</h3>
+			</div>
+			<div className="flex items-center gap-1">
+				<Button variant="ghost" size="sm" onClick={onEdit}>
+					Edit
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					className="text-destructive hover:text-destructive"
+					onClick={onDelete}
+				>
+					Delete
+				</Button>
+			</div>
+		</div>
+
+		<div className="mt-3 space-y-0.5 text-sm text-muted-foreground">
+			<p className="font-medium text-foreground">
+				{address.name} {address.surname}
+			</p>
+			<p>{address.phone}</p>
+			<p>
+				{address.address}, {address.neighborhood}
+			</p>
+			<p>
+				{address.district}, {address.city}
+			</p>
+		</div>
+
+		<div className="mt-4 flex flex-wrap gap-4 border-t border-border pt-4 text-sm">
+			<label className="flex cursor-pointer items-center gap-2">
+				<input
+					type="radio"
+					name="shippingAddress"
+					checked={shippingSelected}
+					onChange={onSelectShipping}
+					className="size-4 accent-[var(--color-primary)]"
+				/>
+				<span className="text-foreground">Ship here</span>
+			</label>
+			{billingEnabled ? (
+				<label className="flex cursor-pointer items-center gap-2">
+					<input
+						type="radio"
+						name="billingAddress"
+						checked={billingSelected}
+						onChange={onSelectBilling}
+						className="size-4 accent-[var(--color-primary)]"
+					/>
+					<span className="text-foreground">Bill here</span>
+				</label>
+			) : null}
+		</div>
+	</div>
+);
+
 const OrderPageContent: React.FC = () => {
 	const setAddress = useCartStore((state) => state.setAddress);
+	const cart = useCartStore((state) => state.cart);
 	const navigate = useNavigate();
-	const [addresses, setAddresses] = useState<Address[]>([]);
-	const [showAddressForm, setShowAddressForm] = useState<boolean>(false);
-	const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-	const [selectedShippingAddress, setSelectedShippingAddress] =
-		useState<Address | null>(null);
-	const [selectedBillingAddress, setSelectedBillingAddress] =
-		useState<Address | null>(null);
-	const [useSameAddress, setUseSameAddress] = useState<boolean>(false);
+	const queryClient = useQueryClient();
 
-	useEffect(() => {
-		fetchAddresses();
-	}, []);
+	const [showForm, setShowForm] = useState(false);
+	const [editing, setEditing] = useState<Address | null>(null);
+	const [shippingId, setShippingId] = useState<number | null>(null);
+	const [billingId, setBillingId] = useState<number | null>(null);
+	const [billingSame, setBillingSame] = useState(true);
 
-	const fetchAddresses = async (): Promise<void> => {
-		try {
-			const response = await api.get("/user/address");
-			setAddresses(response.data);
-		} catch (error) {
-			toast.error("Failed to fetch addresses");
-		}
-	};
+	const { data: addresses = [], isLoading } = useQuery({
+		queryKey: ["addresses"],
+		queryFn: async () => (await api.get<Address[]>("/user/address")).data,
+	});
 
-	const handleAddAddress = async (data: Address): Promise<void> => {
-		try {
-			if (editingAddress) {
-				await api.put("/user/address", { ...data, id: editingAddress.id });
-				toast.success("Address updated successfully");
+	const invalidate = () =>
+		queryClient.invalidateQueries({ queryKey: ["addresses"] });
+
+	const saveAddress = useMutation({
+		mutationFn: async (data: AddressFormData) => {
+			if (editing?.id) {
+				await api.put("/user/address", { ...data, id: editing.id });
 			} else {
 				await api.post("/user/address", data);
-				toast.success("Address added successfully");
 			}
-			fetchAddresses();
-			setShowAddressForm(false);
-			setEditingAddress(null);
-		} catch (error) {
-			toast.error("Failed to save address");
-		}
-	};
+		},
+		onSuccess: async () => {
+			toast.success(editing ? "Address updated" : "Address saved");
+			await invalidate();
+			setShowForm(false);
+			setEditing(null);
+		},
+		onError: () => toast.error("We couldn't save that address."),
+	});
 
-	const handleDeleteAddress = async (addressId: number): Promise<void> => {
-		if (window.confirm("Are you sure you want to delete this address?")) {
-			try {
-				await api.delete(`/user/address/${addressId}`);
-				toast.success("Address deleted successfully");
-				fetchAddresses();
-			} catch (error) {
-				toast.error("Failed to delete address");
-			}
-		}
-	};
+	const deleteAddress = useMutation({
+		mutationFn: async (id: number) => {
+			await api.delete(`/user/address/${id}`);
+		},
+		onSuccess: async (_data, id) => {
+			toast.success("Address removed");
+			if (shippingId === id) setShippingId(null);
+			if (billingId === id) setBillingId(null);
+			await invalidate();
+		},
+		onError: () => toast.error("We couldn't remove that address."),
+	});
 
-	const handleEditAddress = (address: Address): void => {
-		setEditingAddress(address);
-		setShowAddressForm(true);
-	};
+	const hasItems = cart.some((item) => item.checked !== false);
 
-	const handleContinueToPayment = (): void => {
-		if (
-			!selectedShippingAddress ||
-			(!useSameAddress && !selectedBillingAddress)
-		) {
-			toast.error("Please select both shipping and billing addresses");
+	const handleContinue = () => {
+		if (!hasItems) {
+			toast.error("Your cart is empty.");
 			return;
 		}
-
-		setAddress(selectedShippingAddress);
-
+		const shipping = addresses.find((a) => a.id === shippingId);
+		if (!shipping) {
+			toast.error("Please choose a shipping address.");
+			return;
+		}
+		const billing = billingSame
+			? shipping
+			: addresses.find((a) => a.id === billingId);
+		if (!billing) {
+			toast.error("Please choose a billing address.");
+			return;
+		}
+		setAddress({ shipping, billing });
 		navigate({ to: "/payment" });
 	};
 
+	const continueDisabled =
+		!hasItems || shippingId === null || (!billingSame && billingId === null);
+
 	return (
-		<div className="container mx-auto px-4 py-8">
-			<h1 className="text-2xl font-bold mb-6">Create Order</h1>
+		<Container>
+			<Section>
+				<PageHeader
+					eyebrow="Checkout"
+					title="Where should we send it?"
+					description="Choose a delivery address, or add a new one. You can use a separate billing address if you'd like."
+				/>
+				<CheckoutSteps current={1} />
 
-			{/* Address Management Section */}
-			<div className="mb-8">
-				<div className="flex justify-between items-center mb-4">
-					<h2 className="text-xl font-semibold">Shipping Addresses</h2>
-					<button
-						onClick={() => {
-							setEditingAddress(null);
-							setShowAddressForm(true);
-						}}
-						className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-					>
-						Add New Address
-					</button>
-				</div>
+				<div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
+					<div className="space-y-6">
+						<div className="flex items-center justify-between">
+							<h2 className="text-xl font-semibold tracking-tight">
+								Delivery addresses
+							</h2>
+							{!showForm ? (
+								<Button
+									variant="outline"
+									onClick={() => {
+										setEditing(null);
+										setShowForm(true);
+									}}
+								>
+									<Plus className="size-4" aria-hidden="true" />
+									Add address
+								</Button>
+							) : null}
+						</div>
 
-				{showAddressForm ? (
-					<div className="bg-white p-6 rounded-lg shadow-md">
-						<h3 className="text-lg font-semibold mb-4">
-							{editingAddress ? "Edit Address" : "Add New Address"}
-						</h3>
-						<AddressForm
-							onSubmit={handleAddAddress}
-							initialData={editingAddress}
-							onCancel={() => {
-								setShowAddressForm(false);
-								setEditingAddress(null);
-							}}
+						{showForm ? (
+							<div className="rounded-lg border border-border bg-card p-6 shadow-xs">
+								<h3 className="mb-5 text-lg font-medium">
+									{editing ? "Edit address" : "Add a new address"}
+								</h3>
+								<AddressForm
+									onSubmit={(data) => saveAddress.mutate(data)}
+									initialData={editing}
+									isSubmitting={saveAddress.isPending}
+									onCancel={() => {
+										setShowForm(false);
+										setEditing(null);
+									}}
+								/>
+							</div>
+						) : isLoading ? (
+							<div className="flex justify-center py-12">
+								<Spinner />
+							</div>
+						) : addresses.length === 0 ? (
+							<div className="flex flex-col items-center rounded-lg border border-dashed border-border bg-muted/40 px-6 py-12 text-center">
+								<span className="mb-4 flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+									<MapPin className="size-6" aria-hidden="true" />
+								</span>
+								<p className="font-medium text-foreground">
+									No addresses saved yet
+								</p>
+								<p className="mt-1 text-sm text-muted-foreground">
+									Add a delivery address to continue to payment.
+								</p>
+							</div>
+						) : (
+							<>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									{addresses.map((address) => (
+										<AddressCard
+											key={address.id}
+											address={address}
+											shippingSelected={shippingId === address.id}
+											billingSelected={billingId === address.id}
+											billingEnabled={!billingSame}
+											onSelectShipping={() => setShippingId(address.id ?? null)}
+											onSelectBilling={() => setBillingId(address.id ?? null)}
+											onEdit={() => {
+												setEditing(address);
+												setShowForm(true);
+											}}
+											onDelete={() =>
+												address.id && deleteAddress.mutate(address.id)
+											}
+										/>
+									))}
+								</div>
+
+								<label className="flex cursor-pointer items-center gap-2 text-sm">
+									<input
+										type="checkbox"
+										checked={billingSame}
+										onChange={(event) => {
+											setBillingSame(event.target.checked);
+											if (event.target.checked) setBillingId(null);
+										}}
+										className="size-4 accent-[var(--color-primary)]"
+									/>
+									<span className="text-foreground">
+										Billing address is the same as shipping
+									</span>
+								</label>
+							</>
+						)}
+					</div>
+
+					<div>
+						<OrderSummary
+							buttonText="Continue to payment"
+							buttonDisabled={continueDisabled}
+							onButtonClick={handleContinue}
 						/>
 					</div>
-				) : (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-						{addresses.map((address) => (
-							<div
-								key={address.id}
-								className="bg-white p-4 rounded-lg shadow-md border border-gray-200"
-							>
-								<div className="flex justify-between items-start mb-2">
-									<h3 className="font-semibold">{address.title}</h3>
-									<div className="space-x-2">
-										<button
-											onClick={() => handleEditAddress(address)}
-											className="text-blue-600 hover:text-blue-800"
-										>
-											Edit
-										</button>
-										<button
-											onClick={() =>
-												address.id && handleDeleteAddress(address.id)
-											}
-											className="text-red-600 hover:text-red-800"
-										>
-											Delete
-										</button>
-									</div>
-								</div>
-								<p className="text-gray-600">
-									{address.name} {address.surname}
-								</p>
-								<p className="text-gray-600">{address.phone}</p>
-								<p className="text-gray-600">
-									{address.address}, {address.neighborhood}
-								</p>
-								<p className="text-gray-600">
-									{address.district}, {address.city}
-								</p>
-								<div className="mt-4">
-									<label className="flex items-center space-x-2">
-										<input
-											type="radio"
-											name="shippingAddress"
-											checked={selectedShippingAddress?.id === address.id}
-											onChange={() => setSelectedShippingAddress(address)}
-											className="form-radio text-blue-600"
-										/>
-										<span>Use as shipping address</span>
-									</label>
-									<label className="flex items-center space-x-2 mt-2">
-										<input
-											type="radio"
-											name="billingAddress"
-											checked={selectedBillingAddress?.id === address.id}
-											onChange={() => setSelectedBillingAddress(address)}
-											className="form-radio text-blue-600"
-										/>
-										<span>Use as billing address</span>
-									</label>
-								</div>
-							</div>
-						))}
-					</div>
-				)}
-			</div>
-
-			{/* Use Same Address Checkbox */}
-			<div className="mb-8">
-				<label className="flex items-center space-x-2">
-					<input
-						type="checkbox"
-						checked={useSameAddress}
-						onChange={(e) => {
-							setUseSameAddress(e.target.checked);
-							if (e.target.checked) {
-								setSelectedBillingAddress(selectedShippingAddress);
-							}
-						}}
-						className="form-checkbox text-blue-600"
-					/>
-					<span>Use shipping address as billing address</span>
-				</label>
-			</div>
-
-			{/* Continue to Payment Button */}
-			<div className="flex justify-end">
-				<button
-					onClick={handleContinueToPayment}
-					className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-				>
-					Continue to Payment
-				</button>
-			</div>
-		</div>
+				</div>
+			</Section>
+		</Container>
 	);
 };
 

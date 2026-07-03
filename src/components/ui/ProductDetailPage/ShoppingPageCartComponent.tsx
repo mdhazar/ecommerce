@@ -1,288 +1,252 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2, Truck } from "lucide-react";
 import type React from "react";
 import { toast } from "react-toastify";
+import {
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	Container,
+	Section,
+} from "@/components/ui/common";
+import SiteLayout from "@/layouts/SiteLayout";
+import { cartTotals, FREE_SHIPPING_THRESHOLD } from "@/lib/cart";
+import { formatPrice } from "@/lib/format";
+import { onImageError, productImage } from "@/lib/images";
 import { useAuthStore } from "@/stores/auth-store";
 import { useCartStore } from "@/stores/cart-store";
-import Footer from "../../../layouts/Footer";
-import Header from "../../../layouts/Header";
-import Navbar from "../../../layouts/Navbar";
-
-interface Product {
-	id: number;
-	name: string;
-	price: number;
-	stock: number;
-	images?: Array<{ url: string }>;
-}
-
-interface CartItem {
-	product: Product;
-	count: number;
-	checked: boolean;
-}
-
-interface User {
-	[key: string]: any;
-}
+import type { CartItem } from "@/types/models";
 
 const ShoppingCartPage: React.FC = () => {
 	const cart = useCartStore((state) => state.cart);
 	const user = useAuthStore((state) => state.user);
 	const removeFromCart = useCartStore((state) => state.removeFromCart);
-	const toggleCartItem = useCartStore((state) => state.toggleCartItem);
 	const updateCartItem = useCartStore((state) => state.updateCartItem);
 	const navigate = useNavigate();
 
-	const handleQuantityChange = (
-		productId: number,
-		currentCount: number,
-		change: number,
-	): void => {
-		const newCount = currentCount + change;
-		if (newCount < 1) return;
+	const { subtotal, shipping, total, freeShippingRemaining } = cartTotals(cart);
+	const shippingUnlocked = subtotal > 0 && freeShippingRemaining === 0;
+	const progress =
+		subtotal > 0
+			? Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)
+			: 0;
 
-		const cartItem = cart.find((item) => item.product.id === productId);
-		if (!cartItem) return;
-		if (newCount > cartItem.product.stock) {
-			toast.error("Cannot exceed available stock!");
+	const handleQuantityChange = (item: CartItem, change: number): void => {
+		const newCount = item.count + change;
+		if (newCount < 1) return;
+		if (newCount > item.product.stock) {
+			toast.error(`Only ${item.product.stock} left in stock.`);
 			return;
 		}
-
-		updateCartItem(productId, newCount);
+		updateCartItem(item.product.id, newCount);
 	};
 
-	const handleRemove = (productId: number): void => {
-		removeFromCart(productId);
+	const handleRemove = (item: CartItem): void => {
+		removeFromCart(item.product.id);
+		toast.info(`Removed ${item.product.name} from your bag.`);
 	};
 
-	const handleToggleCheck = (productId: number): void => {
-		toggleCartItem(productId);
-	};
-
-	const handleCreateOrder = (): void => {
+	const handleCheckout = (): void => {
 		if (!user || !Object.keys(user).length) {
 			navigate({ to: "/login", search: { redirect: "/order" } });
 			return;
 		}
-
 		navigate({ to: "/order" });
 	};
 
-	const calculateSubtotal = (): number => {
-		return cart
-			.filter((item: CartItem) => item.checked)
-			.reduce(
-				(total: number, item: CartItem) =>
-					total + item.product.price * item.count,
-				0,
-			);
-	};
-
-	const SHIPPING_FEE = 15;
-	const DISCOUNT = 10;
-
-	const subtotal = calculateSubtotal();
-	const shippingCost = subtotal > 0 ? SHIPPING_FEE : 0;
-	const discountAmount = (subtotal * DISCOUNT) / 100;
-	const grandTotal = subtotal + shippingCost - discountAmount;
+	if (cart.length === 0) {
+		return (
+			<SiteLayout>
+				<Container>
+					<Section>
+						<div className="mx-auto flex max-w-md flex-col items-center text-center">
+							<span className="mb-6 flex size-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
+								<ShoppingBag className="size-7" aria-hidden="true" />
+							</span>
+							<p className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+								Your bag
+							</p>
+							<h1 className="text-3xl font-semibold tracking-tight">
+								Your bag is empty
+							</h1>
+							<p className="mt-3 text-muted-foreground">
+								Nothing here yet. Explore our latest arrivals and find something
+								you'll love to come home to.
+							</p>
+							<Button asChild className="mt-8">
+								<Link to="/shop">Start shopping</Link>
+							</Button>
+						</div>
+					</Section>
+				</Container>
+			</SiteLayout>
+		);
+	}
 
 	return (
-		<div className="min-h-screen flex flex-col">
-			<Header />
-			<Navbar />
+		<SiteLayout>
+			<Container>
+				<Section>
+					<header className="mb-10">
+						<p className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+							Your bag
+						</p>
+						<h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+							Shopping cart
+						</h1>
+						<p className="mt-3 text-muted-foreground">
+							{cart.length} {cart.length === 1 ? "piece" : "pieces"} ready for
+							checkout.
+						</p>
+					</header>
 
-			<main className="flex-1 bg-gray-50 py-8">
-				<div className="container mx-auto px-4">
-					<h1 className="text-2xl font-bold text-gray-900 mb-8">
-						Shopping Cart
-					</h1>
+					<div className="grid gap-10 lg:grid-cols-[1fr_22rem]">
+						{/* Line items */}
+						<ul className="divide-y divide-border border-y border-border">
+							{cart.map((item) => (
+								<li key={item.product.id} className="flex gap-4 py-6 sm:gap-6">
+									<Link
+										to="/product/$productId"
+										params={{ productId: String(item.product.id) }}
+										className="shrink-0 overflow-hidden rounded-md border border-border bg-muted"
+									>
+										<img
+											src={productImage(item.product.images)}
+											onError={onImageError}
+											alt={item.product.name}
+											className="size-24 object-cover sm:size-28"
+										/>
+									</Link>
 
-					{cart.length === 0 ? (
-						<div className="text-center py-12">
-							<h2 className="text-xl font-semibold mb-4">Your cart is empty</h2>
-							<p className="text-gray-600 mb-8">
-								Add some items to your cart to see them here.
-							</p>
-							<Link
-								to="/shop"
-								className="bg-[#23A6F0] text-white px-6 py-3 rounded-lg hover:bg-[#1a8dd3] transition-colors"
-							>
-								Continue Shopping
-							</Link>
-						</div>
-					) : (
-						<div className="flex flex-col lg:flex-row gap-8">
-							<div className="lg:w-2/3">
-								<div className="bg-white rounded-lg shadow-xs overflow-hidden">
-									<div className="min-w-full divide-y divide-gray-200">
-										<div className="bg-gray-50">
-											<div className="grid grid-cols-12 gap-4 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-												<div className="col-span-1">Select</div>
-												<div className="col-span-2">Product</div>
-												<div className="col-span-3">Name</div>
-												<div className="col-span-1">Price</div>
-												<div className="col-span-2">Quantity</div>
-												<div className="col-span-2">Total</div>
-												<div className="col-span-1">Actions</div>
-											</div>
-										</div>
-
-										<div className="bg-white divide-y divide-gray-200">
-											{cart.map((item: CartItem) => (
-												<div
-													key={item.product.id}
-													className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 transition-colors"
+									<div className="flex min-w-0 flex-1 flex-col">
+										<div className="flex items-start justify-between gap-3">
+											<div className="min-w-0">
+												<Link
+													to="/product/$productId"
+													params={{ productId: String(item.product.id) }}
+													className="font-medium text-foreground transition-colors hover:text-primary"
 												>
-													<div className="col-span-1">
-														<input
-															type="checkbox"
-															checked={item.checked}
-															onChange={() =>
-																handleToggleCheck(item.product.id)
-															}
-															className="h-4 w-4 text-[#23A6F0] rounded border-gray-300 focus:ring-[#23A6F0]"
-														/>
-													</div>
-
-													<div className="col-span-2">
-														<img
-															src={
-																item.product.images?.[0]?.url ||
-																"/placeholder.png"
-															}
-															alt={item.product.name}
-															className="h-16 w-16 object-cover rounded-lg shadow-xs"
-														/>
-													</div>
-
-													<div className="col-span-3">
-														<div className="font-medium text-gray-900">
-															{item.product.name}
-														</div>
-														<div className="text-sm text-gray-500">
-															Stock: {item.product.stock}
-														</div>
-													</div>
-
-													<div className="col-span-1 font-medium">
-														${item.product.price.toFixed(2)}
-													</div>
-
-													<div className="col-span-2">
-														<div className="flex items-center justify-center space-x-2 bg-gray-50 rounded-lg p-1">
-															<button
-																onClick={() =>
-																	handleQuantityChange(
-																		item.product.id,
-																		item.count,
-																		-1,
-																	)
-																}
-																disabled={item.count <= 1}
-																className="p-1.5 rounded-md hover:bg-white disabled:opacity-50 transition-colors"
-															>
-																<Minus size={12} />
-															</button>
-															<span className="w-12 text-center font-medium">
-																{item.count}
-															</span>
-															<button
-																onClick={() =>
-																	handleQuantityChange(
-																		item.product.id,
-																		item.count,
-																		1,
-																	)
-																}
-																disabled={item.count >= item.product.stock}
-																className="p-1.5 rounded-md hover:bg-white disabled:opacity-50 transition-colors"
-															>
-																<Plus size={12} />
-															</button>
-														</div>
-													</div>
-
-													<div className="col-span-2 font-medium text-[#23A6F0]">
-														${(item.product.price * item.count).toFixed(2)}
-													</div>
-
-													<div className="col-span-1">
-														<button
-															onClick={() => handleRemove(item.product.id)}
-															className="text-red-500 hover:text-red-700 p-2 rounded-md hover:bg-red-50 transition-colors"
-														>
-															<Trash2 />
-														</button>
-													</div>
-												</div>
-											))}
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div className="lg:w-1/3">
-								<div className="bg-white rounded-lg shadow-xs p-6 sticky top-8">
-									<h2 className="text-xl font-bold mb-6">Order Summary</h2>
-
-									<div className="space-y-4">
-										<div className="flex justify-between text-gray-600">
-											<span>Subtotal</span>
-											<span>${subtotal.toFixed(2)}</span>
+													{item.product.name}
+												</Link>
+												<p className="mt-1 text-sm text-muted-foreground">
+													{formatPrice(item.product.price)} each
+												</p>
+											</div>
+											<button
+												type="button"
+												onClick={() => handleRemove(item)}
+												aria-label={`Remove ${item.product.name}`}
+												className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-destructive"
+											>
+												<Trash2 className="size-4" aria-hidden="true" />
+											</button>
 										</div>
 
-										<div className="flex justify-between text-gray-600">
-											<span>Shipping Fee</span>
-											<span>${shippingCost.toFixed(2)}</span>
-										</div>
-
-										<div className="flex justify-between text-green-600">
-											<span>Discount ({DISCOUNT}%)</span>
-											<span>-${discountAmount.toFixed(2)}</span>
-										</div>
-
-										<div className="border-t border-gray-200 my-4"></div>
-
-										<div className="flex justify-between text-lg font-bold">
-											<span>Grand Total</span>
-											<span className="text-[#23A6F0]">
-												${grandTotal.toFixed(2)}
-											</span>
-										</div>
-
-										<button
-											onClick={handleCreateOrder}
-											className="w-full bg-[#23A6F0] text-white py-3 px-6 rounded-lg hover:bg-[#1a8dd3] transition-colors mt-6 disabled:bg-gray-300 disabled:cursor-not-allowed"
-											disabled={!cart.some((item: CartItem) => item.checked)}
-										>
-											Create Order
-										</button>
-
-										<div className="text-sm text-gray-500 mt-4 space-y-2">
-											<p className="flex items-center gap-2">
-												<span className="text-green-500">✓</span>
-												Secure checkout
-											</p>
-											<p className="flex items-center gap-2">
-												<span className="text-green-500">✓</span>
-												Free shipping on orders over $100
-											</p>
-											<p className="flex items-center gap-2">
-												<span className="text-green-500">✓</span>
-												30-day return policy
+										<div className="mt-auto flex items-end justify-between gap-3 pt-4">
+											<div className="inline-flex items-center rounded-md border border-border">
+												<button
+													type="button"
+													onClick={() => handleQuantityChange(item, -1)}
+													disabled={item.count <= 1}
+													aria-label="Decrease quantity"
+													className="flex size-9 items-center justify-center rounded-l-md text-foreground transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-40"
+												>
+													<Minus className="size-4" aria-hidden="true" />
+												</button>
+												<span className="w-10 text-center text-sm font-medium tabular-nums">
+													{item.count}
+												</span>
+												<button
+													type="button"
+													onClick={() => handleQuantityChange(item, 1)}
+													disabled={item.count >= item.product.stock}
+													aria-label="Increase quantity"
+													className="flex size-9 items-center justify-center rounded-r-md text-foreground transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-40"
+												>
+													<Plus className="size-4" aria-hidden="true" />
+												</button>
+											</div>
+											<p className="font-medium tabular-nums">
+												{formatPrice(item.product.price * item.count)}
 											</p>
 										</div>
 									</div>
-								</div>
-							</div>
-						</div>
-					)}
-				</div>
-			</main>
+								</li>
+							))}
+						</ul>
 
-			<Footer />
-		</div>
+						{/* Order summary */}
+						<aside className="lg:sticky lg:top-24 lg:self-start">
+							<Card>
+								<CardHeader>
+									<CardTitle className="text-xl">Order summary</CardTitle>
+								</CardHeader>
+								<CardContent className="space-y-5">
+									<div className="rounded-md bg-muted p-4">
+										<p className="flex items-center gap-2 text-sm text-muted-foreground">
+											<Truck
+												className="size-4 text-primary"
+												aria-hidden="true"
+											/>
+											{shippingUnlocked
+												? "You've unlocked complimentary shipping."
+												: `Add ${formatPrice(freeShippingRemaining)} for complimentary shipping.`}
+										</p>
+										<div className="mt-3 h-1.5 overflow-hidden rounded-full bg-border">
+											<div
+												className="h-full rounded-full bg-primary transition-all"
+												style={{ width: `${progress}%` }}
+											/>
+										</div>
+									</div>
+
+									<dl className="space-y-3 text-sm">
+										<div className="flex items-center justify-between">
+											<dt className="text-muted-foreground">Subtotal</dt>
+											<dd className="font-medium tabular-nums">
+												{formatPrice(subtotal)}
+											</dd>
+										</div>
+										<div className="flex items-center justify-between">
+											<dt className="text-muted-foreground">Shipping</dt>
+											<dd className="font-medium tabular-nums">
+												{shipping === 0 ? (
+													<span className="text-success">Free</span>
+												) : (
+													formatPrice(shipping)
+												)}
+											</dd>
+										</div>
+									</dl>
+
+									<div className="flex items-center justify-between border-t border-border pt-4">
+										<span className="text-base font-medium">Total</span>
+										<span className="text-lg font-semibold tabular-nums">
+											{formatPrice(total)}
+										</span>
+									</div>
+
+									<Button size="lg" className="w-full" onClick={handleCheckout}>
+										Proceed to checkout
+									</Button>
+
+									<Button asChild variant="link" className="w-full">
+										<Link to="/shop">Continue shopping</Link>
+									</Button>
+
+									<p className="text-center text-xs text-muted-foreground">
+										Complimentary shipping on orders over{" "}
+										{formatPrice(FREE_SHIPPING_THRESHOLD)}. 30-day returns.
+									</p>
+								</CardContent>
+							</Card>
+						</aside>
+					</div>
+				</Section>
+			</Container>
+		</SiteLayout>
 	);
 };
 

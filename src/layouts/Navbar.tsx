@@ -1,378 +1,326 @@
 import { Link } from "@tanstack/react-router";
 import {
 	ChevronDown,
-	ChevronUp,
 	Heart,
 	Menu,
 	Search,
-	ShoppingCart,
+	ShoppingBag,
 	User,
 	X,
 } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { Brand } from "@/components/ui/common/Brand";
+import { ThemeToggle } from "@/components/ui/common/ThemeToggle";
+import { cn } from "@/lib/utils";
 import { useCategories } from "@/queries/categories";
 import { useAuthStore } from "@/stores/auth-store";
 import { useCartStore } from "@/stores/cart-store";
+import { useWishlistStore } from "@/stores/wishlist-store";
+import type { Category } from "@/types/models";
 import CartDropdown from "../components/ui/cart/CartDropdown";
 
-interface Category {
-	id: number;
-	gender: string;
-	code: string;
-	title: string;
-}
+const GENDERS = [
+	{ code: "k", label: "Women" },
+	{ code: "e", label: "Men" },
+] as const;
 
-interface User {
-	email: string;
-	name?: string;
-	gravatarUrl: string;
-}
-
-interface CartItem {
-	count: number;
-}
+const NAV_LINKS = [
+	{ to: "/", label: "Home" },
+	{ to: "/about", label: "About" },
+	{ to: "/blog", label: "Journal" },
+	{ to: "/contact", label: "Contact" },
+] as const;
 
 const Navbar: React.FC = () => {
-	const [menuOpen, setMenuOpen] = useState<boolean>(false);
-	const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-	const [cartOpen, setCartOpen] = useState<boolean>(false);
+	const [menuOpen, setMenuOpen] = useState(false);
+	const [shopOpen, setShopOpen] = useState(false);
+	const [cartOpen, setCartOpen] = useState(false);
+	const [userMenuOpen, setUserMenuOpen] = useState(false);
+
 	const user = useAuthStore((state) => state.user);
 	const logout = useAuthStore((state) => state.logout);
 	const { data: categories = [] } = useCategories();
 	const cart = useCartStore((state) => state.cart);
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-	const userMenuRef = useRef<HTMLDivElement>(null);
-	const cartItemsCount = cart.reduce(
-		(total: number, item: CartItem) => total + item.count,
-		0,
-	);
+	const wishlistCount = useWishlistStore((state) => state.items.length);
+
+	const shopRef = useRef<HTMLDivElement>(null);
+	const cartRef = useRef<HTMLDivElement>(null);
+	const userRef = useRef<HTMLDivElement>(null);
+
+	const cartCount = cart.reduce((total, item) => total + item.count, 0);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (!(event.target as Element).closest(".dropdown-container")) {
-				setDropdownOpen(false);
-			}
-			if (!(event.target as Element).closest(".cart-container")) {
+			const target = event.target as Node;
+			if (shopRef.current && !shopRef.current.contains(target))
+				setShopOpen(false);
+			if (cartRef.current && !cartRef.current.contains(target))
 				setCartOpen(false);
-			}
-			if (
-				userMenuRef.current &&
-				!userMenuRef.current.contains(event.target as Node)
-			) {
-				setIsUserMenuOpen(false);
-			}
+			if (userRef.current && !userRef.current.contains(target))
+				setUserMenuOpen(false);
 		};
-
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
-	const toggleMenu = (): void => {
-		setMenuOpen(!menuOpen);
-	};
-
-	const toggleDropdown = (): void => {
-		setDropdownOpen(!dropdownOpen);
-	};
-
-	const handleLogout = (): void => {
+	const handleLogout = () => {
 		logout();
+		setUserMenuOpen(false);
 		setMenuOpen(false);
 	};
 
-	return (
-		<div className="bg-white">
-			<div className="container mx-auto flex items-center justify-between py-4 px-4">
-				<div className="text-2xl font-bold text-[#252B42]">
-					<Link to="/">BrandName</Link>
-				</div>
+	const linkClass =
+		"text-sm font-medium text-muted-foreground transition-colors hover:text-foreground";
 
-				{/* Desktop Navigation */}
-				<div className="hidden md:flex items-center space-x-6">
-					<Link to="/" className="text-gray-600 hover:text-gray-800">
+	return (
+		<header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md">
+			<nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-8">
+				<Brand />
+
+				{/* Desktop navigation */}
+				<div className="hidden items-center gap-7 lg:flex">
+					<Link to="/" className={linkClass}>
 						Home
 					</Link>
 
-					{/* Shop Link with Dropdown */}
-					<div className="relative flex dropdown-container">
-						<Link
-							to="/shop"
-							className="text-gray-600 hover:text-gray-800 flex items-center"
+					<div className="relative" ref={shopRef}>
+						<button
+							type="button"
+							onClick={() => setShopOpen((open) => !open)}
+							className={cn(linkClass, "flex items-center gap-1")}
+							aria-expanded={shopOpen}
 						>
 							Shop
-						</Link>
-						<button
-							onClick={toggleDropdown}
-							className="text-gray-600 hover:text-gray-800 ml-2"
-						>
-							{dropdownOpen ? <ChevronUp /> : <ChevronDown />}
+							<ChevronDown
+								size={15}
+								className={cn("transition-transform", shopOpen && "rotate-180")}
+							/>
 						</button>
-						{dropdownOpen && (
-							<div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 top-full">
-								<div className="grid grid-cols-2 p-4 gap-4">
-									<div>
-										<h3 className="font-bold text-gray-800 mb-2">Kadın</h3>
-										{categories
-											.filter((category: Category) => category.gender === "k")
-											.map((category: Category) => (
-												<Link
-													key={category.id}
-													to="/shop"
-													search={{
-														gender: "k",
-														category: category.code.split(":")[1],
-													}}
-													className="block px-2 mb-4 text-sm font-semibold text-[#737373] hover:bg-gray-100"
-													onClick={() => setDropdownOpen(false)}
-												>
-													{category.title}
-												</Link>
-											))}
-									</div>
-									<div>
-										<h3 className="font-bold text-gray-800 mb-2">Erkek</h3>
-										{categories
-											.filter((category: Category) => category.gender === "e")
-											.map((category: Category) => (
-												<Link
-													key={category.id}
-													to="/shop"
-													search={{
-														gender: "e",
-														category: category.code.split(":")[1],
-													}}
-													className="block px-2 mb-4 text-sm font-semibold text-[#737373] hover:bg-gray-100"
-													onClick={() => setDropdownOpen(false)}
-												>
-													{category.title}
-												</Link>
-											))}
-									</div>
+						{shopOpen && (
+							<div className="absolute left-1/2 top-full z-50 mt-3 w-[26rem] -translate-x-1/2 rounded-lg border border-border bg-popover p-5 shadow-xl">
+								<div className="mb-3 flex items-center justify-between">
+									<Link
+										to="/shop"
+										className="text-sm font-semibold text-foreground hover:text-primary"
+										onClick={() => setShopOpen(false)}
+									>
+										Shop all
+									</Link>
+								</div>
+								<div className="grid grid-cols-2 gap-6">
+									{GENDERS.map((gender) => (
+										<div key={gender.code}>
+											<p className="mb-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+												{gender.label}
+											</p>
+											<ul className="space-y-1.5">
+												{categories
+													.filter((c: Category) => c.gender === gender.code)
+													.slice(0, 6)
+													.map((category: Category) => (
+														<li key={category.id}>
+															<Link
+																to="/shop"
+																search={{
+																	gender: gender.code,
+																	category: String(category.id),
+																}}
+																className="block text-sm text-muted-foreground transition-colors hover:text-primary"
+																onClick={() => setShopOpen(false)}
+															>
+																{category.title}
+															</Link>
+														</li>
+													))}
+											</ul>
+										</div>
+									))}
 								</div>
 							</div>
 						)}
 					</div>
 
-					<Link to="/about" className="text-gray-600 hover:text-gray-800">
-						About
-					</Link>
-					<a href="/blog" className="text-gray-600 hover:text-gray-800">
-						Blog
-					</a>
-					<Link to="/contact" className="text-gray-600 hover:text-gray-800">
-						Contact
-					</Link>
-					<Link to="/team" className="text-gray-600 hover:text-gray-800">
-						Pages
-					</Link>
+					{NAV_LINKS.slice(1).map((link) => (
+						<Link key={link.to} to={link.to} className={linkClass}>
+							{link.label}
+						</Link>
+					))}
 				</div>
 
-				{/* Desktop Icons and User Section */}
-				<div className="hidden md:flex items-center space-x-4">
-					<a href="/search" className="text-gray-600 hover:text-gray-800">
-						<Search size={20} />
-					</a>
+				{/* Right-side actions */}
+				<div className="flex items-center gap-1 sm:gap-2">
+					<Link
+						to="/search"
+						className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+						aria-label="Search"
+					>
+						<Search size={18} />
+					</Link>
 
-					{/* Cart Icon and Dropdown */}
-					<div className="relative cart-container">
+					<ThemeToggle />
+
+					<Link
+						to="/wishlist"
+						className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+						aria-label="Wishlist"
+					>
+						<Heart size={18} />
+						{wishlistCount > 0 && (
+							<span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+								{wishlistCount}
+							</span>
+						)}
+					</Link>
+
+					<div className="relative" ref={cartRef}>
 						<button
-							onClick={() => setCartOpen(!cartOpen)}
-							className="text-gray-600 hover:text-gray-800 relative p-2"
+							type="button"
+							onClick={() => setCartOpen((open) => !open)}
+							className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+							aria-label="Cart"
 						>
-							<ShoppingCart size={20} />
-							{cartItemsCount > 0 && (
-								<span className="absolute -top-2 -right-2 bg-[#23A6F0] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-									{cartItemsCount}
+							<ShoppingBag size={18} />
+							{cartCount > 0 && (
+								<span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+									{cartCount}
 								</span>
 							)}
 						</button>
-
 						<CartDropdown
 							isOpen={cartOpen}
 							onClose={() => setCartOpen(false)}
 						/>
 					</div>
 
-					<a href="/wishlist" className="text-gray-600 hover:text-gray-800">
-						<Heart size={20} />
-					</a>
-
-					{/* User Section */}
-					{user && user.email ? (
-						<div className="relative" ref={userMenuRef}>
-							<div className="flex items-center space-x-2">
+					{/* Account (desktop) */}
+					{user?.email ? (
+						<div className="relative hidden lg:block" ref={userRef}>
+							<button
+								type="button"
+								onClick={() => setUserMenuOpen((open) => !open)}
+								className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition-colors hover:bg-accent"
+							>
 								<img
 									src={user.gravatarUrl}
-									alt="User Avatar"
-									className="w-8 h-8 rounded-full"
+									alt=""
+									className="h-7 w-7 rounded-full object-cover"
 								/>
-								<button
-									onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-									className="flex items-center space-x-1"
-								>
-									<span className="text-gray-700">
-										{user.name || user.email}
-									</span>
-									<ChevronDown className="h-4 w-4" />
-								</button>
-
-								{isUserMenuOpen && (
-									<div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-										<Link
-											to="/orders"
-											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-											onClick={() => setIsUserMenuOpen(false)}
-										>
-											Order History
-										</Link>
-										<button
-											onClick={() => {
-												handleLogout();
-												setIsUserMenuOpen(false);
-											}}
-											className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-										>
-											Logout
-										</button>
-									</div>
-								)}
-							</div>
-						</div>
-					) : (
-						<div className="flex items-center space-x-4">
-							<Link
-								to="/login"
-								className="flex items-center text-gray-600 hover:text-gray-800"
-							>
-								<User />
-								<span className="ml-1">Login</span>
-							</Link>
-							<Link to="/signup" className="text-gray-600 hover:text-gray-800">
-								Register
-							</Link>
-						</div>
-					)}
-				</div>
-
-				{/* Mobile Menu Button */}
-				<div className="flex items-center md:hidden">
-					<div className="relative mr-4 cart-container">
-						<button
-							onClick={() => setCartOpen(!cartOpen)}
-							className="text-gray-600 hover:text-gray-800 relative p-2"
-						>
-							<ShoppingCart size={20} />
-							{cartItemsCount > 0 && (
-								<span className="absolute -top-2 -right-2 bg-[#23A6F0] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-									{cartItemsCount}
+								<span className="max-w-[8rem] truncate text-sm font-medium">
+									{user.name || user.email}
 								</span>
-							)}
-						</button>
-
-						<CartDropdown
-							isOpen={cartOpen}
-							onClose={() => setCartOpen(false)}
-						/>
-					</div>
-					<button
-						onClick={toggleMenu}
-						className="text-gray-600 hover:text-gray-800"
-					>
-						{menuOpen ? <X size={24} /> : <Menu size={24} />}
-					</button>
-				</div>
-			</div>
-
-			{/* Mobile Menu */}
-			{menuOpen && (
-				<div className="md:hidden bg-white border-t">
-					<div className="container mx-auto px-4 py-2">
-						<div className="flex flex-col space-y-4">
-							<Link
-								to="/"
-								className="text-gray-600 hover:text-gray-800"
-								onClick={toggleMenu}
-							>
-								Home
-							</Link>
-							<Link
-								to="/shop"
-								className="text-gray-600 hover:text-gray-800"
-								onClick={toggleMenu}
-							>
-								Shop
-							</Link>
-							<Link
-								to="/about"
-								className="text-gray-600 hover:text-gray-800"
-								onClick={toggleMenu}
-							>
-								About
-							</Link>
-							<a
-								href="/blog"
-								className="text-gray-600 hover:text-gray-800"
-								onClick={toggleMenu}
-							>
-								Blog
-							</a>
-							<Link
-								to="/contact"
-								className="text-gray-600 hover:text-gray-800"
-								onClick={toggleMenu}
-							>
-								Contact
-							</Link>
-							<Link
-								to="/team"
-								className="text-gray-600 hover:text-gray-800"
-								onClick={toggleMenu}
-							>
-								Pages
-							</Link>
-							{user && user.email ? (
-								<>
+								<ChevronDown size={15} className="text-muted-foreground" />
+							</button>
+							{userMenuOpen && (
+								<div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-border bg-popover py-1.5 shadow-xl">
 									<Link
 										to="/orders"
-										className="text-gray-600 hover:text-gray-800"
-										onClick={toggleMenu}
+										className="block px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+										onClick={() => setUserMenuOpen(false)}
 									>
-										Order History
+										Order history
+									</Link>
+									<Link
+										to="/wishlist"
+										className="block px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+										onClick={() => setUserMenuOpen(false)}
+									>
+										Wishlist
 									</Link>
 									<button
-										onClick={() => {
-											handleLogout();
-											toggleMenu();
-										}}
-										className="text-left text-red-600 hover:text-red-800"
+										type="button"
+										onClick={handleLogout}
+										className="block w-full px-4 py-2 text-left text-sm text-destructive transition-colors hover:bg-accent"
 									>
-										Logout
+										Sign out
 									</button>
-								</>
-							) : (
-								<>
-									<Link
-										to="/login"
-										className="text-gray-600 hover:text-gray-800"
-										onClick={toggleMenu}
-									>
-										Login
-									</Link>
-									<Link
-										to="/signup"
-										className="text-gray-600 hover:text-gray-800"
-										onClick={toggleMenu}
-									>
-										Register
-									</Link>
-								</>
+								</div>
 							)}
 						</div>
+					) : (
+						<Link
+							to="/login"
+							className="hidden h-9 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:inline-flex"
+						>
+							<User size={17} />
+							Sign in
+						</Link>
+					)}
+
+					{/* Mobile menu toggle */}
+					<button
+						type="button"
+						onClick={() => setMenuOpen((open) => !open)}
+						className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent lg:hidden"
+						aria-label="Menu"
+						aria-expanded={menuOpen}
+					>
+						{menuOpen ? <X size={20} /> : <Menu size={20} />}
+					</button>
+				</div>
+			</nav>
+
+			{/* Mobile drawer */}
+			{menuOpen && (
+				<div className="border-t border-border bg-background lg:hidden">
+					<div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4">
+						<Link
+							to="/shop"
+							className="rounded-md px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent"
+							onClick={() => setMenuOpen(false)}
+						>
+							Shop all
+						</Link>
+						{NAV_LINKS.map((link) => (
+							<Link
+								key={link.to}
+								to={link.to}
+								className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+								onClick={() => setMenuOpen(false)}
+							>
+								{link.label}
+							</Link>
+						))}
+						<div className="my-2 h-px bg-border" />
+						{user?.email ? (
+							<>
+								<Link
+									to="/orders"
+									className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+									onClick={() => setMenuOpen(false)}
+								>
+									Order history
+								</Link>
+								<button
+									type="button"
+									onClick={handleLogout}
+									className="rounded-md px-3 py-2.5 text-left text-sm font-medium text-destructive hover:bg-accent"
+								>
+									Sign out
+								</button>
+							</>
+						) : (
+							<div className="flex gap-2 px-3 py-1">
+								<Link
+									to="/login"
+									className="flex-1 rounded-md border border-border px-3 py-2.5 text-center text-sm font-medium hover:bg-accent"
+									onClick={() => setMenuOpen(false)}
+								>
+									Sign in
+								</Link>
+								<Link
+									to="/signup"
+									className="flex-1 rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground hover:bg-primary/90"
+									onClick={() => setMenuOpen(false)}
+								>
+									Register
+								</Link>
+							</div>
+						)}
 					</div>
 				</div>
 			)}
-		</div>
+		</header>
 	);
 };
 

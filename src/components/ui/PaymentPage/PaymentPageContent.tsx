@@ -1,13 +1,18 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import { Button, Spinner } from "@/components/ui/common";
+import type { CardFormData } from "@/schemas/card";
 import api from "../../../api/api";
-import type { Card, CardFormData } from "../../../types/card";
+import type { Card } from "../../../types/card";
 import CardForm from "./CardForm";
 import CardList from "./CardList";
 
 interface PaymentPageContentProps {
-	onCardSelect?: (card: Card) => void;
+	selectedCard: Card | null;
+	onCardSelect: (card: Card | null) => void;
 }
 
 const convertCardToFormData = (card: Card): CardFormData => ({
@@ -15,107 +20,111 @@ const convertCardToFormData = (card: Card): CardFormData => ({
 	name_on_card: card.name_on_card,
 	expire_month: card.expire_month.toString(),
 	expire_year: card.expire_year,
+	cvv: "",
 });
 
 const PaymentPageContent: React.FC<PaymentPageContentProps> = ({
+	selectedCard,
 	onCardSelect,
 }) => {
-	const [cards, setCards] = useState<Card[]>([]);
+	const queryClient = useQueryClient();
 	const [showCardForm, setShowCardForm] = useState(false);
 	const [editingCard, setEditingCard] = useState<Card | null>(null);
-	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
-	useEffect(() => {
-		fetchCards();
-	}, []);
+	const { data: cards = [], isLoading } = useQuery({
+		queryKey: ["cards"],
+		queryFn: async () => (await api.get<Card[]>("/user/card")).data,
+	});
 
-	const fetchCards = async () => {
-		try {
-			const response = await api.get<Card[]>("/user/card");
-			setCards(response.data);
-		} catch (err) {
-			console.error("Error fetching cards:", err);
-			toast.error("Failed to fetch cards");
-		}
-	};
+	const invalidateCards = () =>
+		queryClient.invalidateQueries({ queryKey: ["cards"] });
 
-	const handleAddCard = async (data: CardFormData) => {
-		try {
+	const saveCard = useMutation({
+		mutationFn: async (data: CardFormData) => {
+			const payload = { ...data, card_no: data.card_no.replace(/\s+/g, "") };
 			if (editingCard) {
-				await api.put("/user/card", { ...data, id: editingCard.id });
-				toast.success("Card updated successfully");
+				await api.put("/user/card", { ...payload, id: editingCard.id });
 			} else {
-				await api.post("/user/card", data);
-				toast.success("Card added successfully");
+				await api.post("/user/card", payload);
 			}
-			fetchCards();
+		},
+		onSuccess: async () => {
+			toast.success(editingCard ? "Card updated" : "Card saved");
+			await invalidateCards();
 			setShowCardForm(false);
 			setEditingCard(null);
-		} catch (err) {
-			console.error("Error saving card:", err);
-			toast.error("Failed to save card");
-		}
-	};
+		},
+		onError: () => toast.error("We couldn't save that card. Please try again."),
+	});
 
-	const handleDeleteCard = async (cardId: string) => {
-		if (window.confirm("Are you sure you want to delete this card?")) {
-			try {
-				await api.delete(`/user/card/${cardId}`);
-				toast.success("Card deleted successfully");
-				fetchCards();
-			} catch (err) {
-				console.error("Error deleting card:", err);
-				toast.error("Failed to delete card");
-			}
-		}
-	};
-
-	const handleSelectCard = (card: Card) => {
-		setSelectedCard(card);
-		onCardSelect?.(card);
-	};
+	const deleteCard = useMutation({
+		mutationFn: async (cardId: string) => {
+			await api.delete(`/user/card/${cardId}`);
+		},
+		onSuccess: async (_data, cardId) => {
+			toast.success("Card removed");
+			if (selectedCard?.id === cardId) onCardSelect(null);
+			await invalidateCards();
+		},
+		onError: () => toast.error("We couldn't remove that card."),
+	});
 
 	return (
 		<div className="space-y-6">
-			<div className="flex justify-between items-center">
-				<h2 className="text-xl font-semibold">Payment Method</h2>
-				<button
-					onClick={() => {
-						setShowCardForm(true);
-						setEditingCard(null);
-					}}
-					className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-				>
-					Add New Card
-				</button>
+			<div className="flex items-center justify-between gap-4">
+				<div>
+					<h2 className="text-xl font-semibold tracking-tight">
+						Payment method
+					</h2>
+					<p className="mt-1 text-sm text-muted-foreground">
+						Choose a saved card or add a new one.
+					</p>
+				</div>
+				{!showCardForm ? (
+					<Button
+						variant="outline"
+						onClick={() => {
+							setEditingCard(null);
+							setShowCardForm(true);
+						}}
+					>
+						<Plus className="size-4" aria-hidden="true" />
+						Add card
+					</Button>
+				) : null}
 			</div>
 
 			{showCardForm ? (
-				<div className="bg-white p-6 rounded-lg shadow-xs">
-					<h3 className="text-lg font-semibold mb-4">
-						{editingCard ? "Edit Card" : "Add New Card"}
+				<div className="rounded-lg border border-border bg-card p-6 shadow-xs">
+					<h3 className="mb-5 text-lg font-medium">
+						{editingCard ? "Edit card" : "Add a new card"}
 					</h3>
 					<CardForm
-						onSubmit={handleAddCard}
+						onSubmit={(data) => saveCard.mutate(data)}
 						initialData={
 							editingCard ? convertCardToFormData(editingCard) : null
 						}
+						isSubmitting={saveCard.isPending}
 						onCancel={() => {
 							setShowCardForm(false);
 							setEditingCard(null);
 						}}
 					/>
 				</div>
+			) : isLoading ? (
+				<div className="flex justify-center py-12">
+					<Spinner />
+				</div>
 			) : (
 				<CardList
 					cards={cards}
 					selectedCard={selectedCard}
-					onSelectCard={handleSelectCard}
-					onEditCard={(card: Card) => {
+					onSelectCard={onCardSelect}
+					onEditCard={(card) => {
 						setEditingCard(card);
 						setShowCardForm(true);
 					}}
-					onDeleteCard={handleDeleteCard}
+					onDeleteCard={(cardId) => deleteCard.mutate(cardId)}
 				/>
 			)}
 		</div>

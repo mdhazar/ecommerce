@@ -1,64 +1,103 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
 import type React from "react";
+import { Container, Section } from "@/components/ui/common";
 
-const mockImage1 = "https://placehold.co/300x300";
-const mockImage2 = "https://placehold.co/300x300";
-const mockImage3 = "https://placehold.co/300x300";
-const mockImage4 = "https://placehold.co/300x300";
-const mockImage5 = "https://placehold.co/300x300";
-const mockImage6 = "https://placehold.co/300x300";
+interface Member {
+	name: string;
+	role: string;
+	bio: string;
+}
+
+const MEMBERS: Member[] = [
+	{
+		name: "Mara Ellison",
+		role: "Founder & Creative Director",
+		bio: "Sets the direction for every collection and still signs off on each first sample by hand.",
+	},
+	{
+		name: "Jonah Reyes",
+		role: "Co-Founder & Head of Sourcing",
+		bio: "Travels to our mills and workshops to make sure every fibre and every wage meets our standard.",
+	},
+	{
+		name: "Priya Nair",
+		role: "Lead Designer",
+		bio: "Translates rough ideas into the quiet, wearable shapes the collection is known for.",
+	},
+	{
+		name: "Tomas Berg",
+		role: "Master Pattern-Cutter",
+		bio: "Turns a flat sketch into a garment that actually fits — the unglamorous work that makes the difference.",
+	},
+	{
+		name: "Amara Okafor",
+		role: "Production Manager",
+		bio: "Keeps our small-batch runs on schedule without ever rushing the people who sew them.",
+	},
+	{
+		name: "Leah Whitfield",
+		role: "Customer Care Lead",
+		bio: "The voice on the other end of every email, and the reason our returns feel effortless.",
+	},
+];
+
+/** Warm token backgrounds cycled across the monogram avatars. */
+const AVATAR_TONES = [
+	"bg-primary text-primary-foreground",
+	"bg-secondary text-secondary-foreground",
+	"bg-accent text-accent-foreground",
+	"bg-muted text-foreground",
+	"bg-secondary text-secondary-foreground",
+	"bg-primary text-primary-foreground",
+];
+
+function initialsOf(name: string): string {
+	return name
+		.split(" ")
+		.map((part) => part[0])
+		.slice(0, 2)
+		.join("")
+		.toUpperCase();
+}
 
 const TeamSection3: React.FC = () => {
 	return (
-		<div className="flex flex-col items-center py-12 px-4">
-			<h2 className="text-3xl font-bold text-gray-800 mb-8">Meet Our Team</h2>
+		<Section className="bg-background">
+			<Container>
+				<div className="mx-auto max-w-2xl text-center">
+					<p className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+						Meet the team
+					</p>
+					<h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+						Six people, one workshop
+					</h2>
+					<p className="mt-4 text-muted-foreground">
+						Small on purpose — every name here has a direct hand in what you
+						wear.
+					</p>
+				</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">
-				{[
-					mockImage1,
-					mockImage2,
-					mockImage3,
-					mockImage4,
-					mockImage5,
-					mockImage6,
-				].map((image, index) => (
-					<div key={index} className="flex flex-col items-center">
-						<img
-							src={image}
-							alt={`Team member ${index + 1}`}
-							className="max-w-full max-h-full object-cover rounded-lg mb-4"
-						/>
-
-						<h3 className="text-xl font-semibold text-gray-800">Username</h3>
-						<p className="text-gray-500">Profession</p>
-
-						<div className="flex space-x-4 mt-4">
-							<a
-								href="#"
-								aria-label="Facebook"
-								className="hover:text-blue-600 text-[#395185]"
+				<div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+					{MEMBERS.map((member, index) => (
+						<div
+							key={member.name}
+							className="flex flex-col items-center rounded-2xl border border-border bg-card p-8 text-center"
+						>
+							<span
+								className={`flex h-20 w-20 items-center justify-center rounded-full font-sans text-xl font-semibold tracking-wide ${AVATAR_TONES[index % AVATAR_TONES.length]}`}
+								aria-hidden="true"
 							>
-								<Facebook />
-							</a>
-							<a
-								href="#"
-								aria-label="Instagram"
-								className="hover:text-pink-500 text-black"
-							>
-								<Instagram />
-							</a>
-							<a
-								href="#"
-								aria-label="Twitter"
-								className="hover:text-blue-500 text-[#55ACEE]"
-							>
-								<Twitter />
-							</a>
+								{initialsOf(member.name)}
+							</span>
+							<h3 className="mt-5 text-lg font-semibold">{member.name}</h3>
+							<p className="mt-1 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+								{member.role}
+							</p>
+							<p className="mt-3 text-sm text-muted-foreground">{member.bio}</p>
 						</div>
-					</div>
-				))}
-			</div>
-		</div>
+					))}
+				</div>
+			</Container>
+		</Section>
 	);
 };
 

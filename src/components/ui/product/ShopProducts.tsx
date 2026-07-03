@@ -1,185 +1,100 @@
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/common/Button";
 import { useProducts } from "@/queries/products";
-import { useFilterStore } from "@/stores/filter-store";
+import { ProductGrid } from "./ProductGrid";
 
-interface Product {
-	id: number;
-	name: string;
-	description: string;
-	price: number;
-	stock: number;
-	rating?: number;
-	images?: Array<{ url: string }>;
-	category_id: number;
-}
-
-interface QueryParams {
-	offset: number;
-	limit: number;
-	category?: string;
-	sort?: string;
-	filter?: string;
-}
+const PAGE_SIZE = 12;
 
 const ShopProducts: React.FC = () => {
-	const navigate = useNavigate();
-	const [currentPage, setCurrentPage] = useState<number>(1);
-	const productsPerPage = 12;
-	const filter = useFilterStore((state) => state.filter);
-	const sort = useFilterStore((state) => state.sort);
-	const setTotal = useFilterStore((state) => state.setTotal);
+	const search = useSearch({ from: "/shop" });
+	const navigate = useNavigate({ from: "/shop" });
 
-	const { category: categoryId } = useSearch({ from: "/shop" });
+	const page = search.page ?? 1;
+	const offset = (page - 1) * PAGE_SIZE;
 
-	const offset = (currentPage - 1) * productsPerPage;
-	const queryParams: QueryParams = {
+	const { data, isLoading, isError } = useProducts({
+		limit: PAGE_SIZE,
 		offset,
-		limit: productsPerPage,
-		...(categoryId ? { category: categoryId } : {}),
-		...(sort ? { sort } : {}),
-		...(filter ? { filter } : {}),
-	};
-	const { data, isLoading: loading, error } = useProducts(queryParams);
+		category: search.category,
+		sort: search.sort,
+		filter: search.filter,
+	});
+
 	const products = data?.products ?? [];
 	const total = data?.total ?? 0;
 
-	// Publish the result count so <ProductFilter /> can display it.
-	useEffect(() => {
-		setTotal(total);
-	}, [total, setTotal]);
+	const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+	const isFirstPage = page <= 1;
+	// Fixed bug: disable "Next" once we've reached the last full page or when
+	// there are no results at all — never let the user page past the data.
+	const isLastPage = total === 0 || offset + PAGE_SIZE >= total;
 
-	const handleProductClick = (product: Product): void => {
+	const rangeStart = total === 0 ? 0 : offset + 1;
+	const rangeEnd = Math.min(offset + products.length, total);
+
+	const goToPage = (next: number): void => {
 		navigate({
-			to: "/product/$productId",
-			params: { productId: String(product.id) },
+			search: (prev) => ({ ...prev, page: next > 1 ? next : undefined }),
 		});
+		if (typeof window !== "undefined") {
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		}
 	};
 
-	useEffect(() => {
-		setCurrentPage(1);
-	}, [filter, sort, categoryId]);
-
-	const totalPages = Math.ceil(total / productsPerPage);
-
-	if (loading) {
+	if (isError) {
 		return (
-			<div className="w-full h-96 flex items-center justify-center">
-				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-			</div>
-		);
-	}
-
-	if (error) {
-		return (
-			<div className="w-full h-96 flex items-center justify-center text-red-500">
-				Error: {error.message}
+			<div className="flex min-h-[30vh] items-center justify-center rounded-lg border border-dashed border-border">
+				<p className="text-sm text-destructive">
+					We couldn&apos;t load the collection. Please try again.
+				</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="container mx-auto px-4 py-8">
-			{/* Product Grid */}
-			<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-				{products.map((product: Product) => (
-					<div
-						key={product.id}
-						onClick={() => handleProductClick(product)}
-						className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+		<div className="flex flex-col gap-8">
+			<p className="text-sm text-muted-foreground" aria-live="polite">
+				{isLoading
+					? "Loading products…"
+					: total === 0
+						? "No products found"
+						: `Showing ${rangeStart}–${rangeEnd} of ${total} products`}
+			</p>
+
+			<ProductGrid
+				products={products}
+				loading={isLoading}
+				skeletonCount={PAGE_SIZE}
+				emptyMessage="No products match your filters yet. Try clearing the search or picking another category."
+			/>
+
+			{total > 0 && pageCount > 1 && (
+				<div className="flex items-center justify-center gap-4">
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => goToPage(page - 1)}
+						disabled={isFirstPage}
 					>
-						<div className="w-full h-64 bg-gray-200">
-							{product.images && product.images.length > 0 ? (
-								<img
-									src={product.images[0].url}
-									alt={product.name}
-									className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-								/>
-							) : (
-								<div className="w-full h-full flex items-center justify-center bg-gray-100">
-									<span className="text-gray-500">No Image</span>
-								</div>
-							)}
-						</div>
-						<div className="p-4">
-							<h3 className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors duration-200">
-								{product.name}
-							</h3>
-							<p className="text-gray-500 line-clamp-2">
-								{product.description}
-							</p>
-							<div className="flex items-center justify-between mt-2">
-								<span className="text-green-600 font-semibold">
-									${product.price.toFixed(2)}
-								</span>
-								{product.stock > 0 ? (
-									<span className="text-sm text-green-500">In Stock</span>
-								) : (
-									<span className="text-sm text-red-500">Out of Stock</span>
-								)}
-							</div>
-							<div className="flex items-center mt-2">
-								<div className="flex text-yellow-400">
-									{[...Array(5)].map((_, index) => (
-										<svg
-											key={index}
-											className={`w-4 h-4 ${
-												index < Math.floor(product.rating || 0)
-													? "text-yellow-400"
-													: "text-gray-300"
-											}`}
-											fill="currentColor"
-											viewBox="0 0 20 20"
-										>
-											<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-										</svg>
-									))}
-								</div>
-								<span className="text-sm text-gray-500 ml-1">
-									({product.rating?.toFixed(1) || "N/A"})
-								</span>
-							</div>
-						</div>
-					</div>
-				))}
-			</div>
-
-			{/* Pagination Controls */}
-			<div className="flex justify-center mt-6 space-x-1">
-				<button
-					onClick={() => setCurrentPage(currentPage - 1)}
-					disabled={currentPage === 1}
-					className="px-3 py-1 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-				>
-					Previous
-				</button>
-
-				{Array.from({ length: totalPages }, (_, index) => index + 1).map(
-					(pageNumber) =>
-						Math.abs(currentPage - pageNumber) <= 2 && (
-							<button
-								key={pageNumber}
-								onClick={() => setCurrentPage(pageNumber)}
-								className={`px-3 py-1 rounded-md border border-gray-300 transition-colors duration-200 ${
-									currentPage === pageNumber
-										? "bg-blue-500 text-white"
-										: "bg-white text-gray-700 hover:bg-gray-50"
-								}`}
-							>
-								{pageNumber}
-							</button>
-						),
-				)}
-
-				<button
-					onClick={() => setCurrentPage(currentPage + 1)}
-					disabled={currentPage === totalPages}
-					className="px-3 py-1 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-				>
-					Next
-				</button>
-			</div>
+						<ChevronLeft size={16} />
+						Previous
+					</Button>
+					<span className="text-sm text-muted-foreground">
+						Page {page} of {pageCount}
+					</span>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => goToPage(page + 1)}
+						disabled={isLastPage}
+					>
+						Next
+						<ChevronRight size={16} />
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 };

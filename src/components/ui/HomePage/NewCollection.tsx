@@ -1,89 +1,45 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type React from "react";
-import productSlide1 from "../../../assets/productSlide1.jpg";
-import { Card, CardContent } from "../../ui/common/Card";
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from "../../ui/common/Carousel";
+import heroImage from "@/assets/coupleWithScarf.png";
+import { Button, Container } from "@/components/ui/common";
 
-interface Collection {
-	season: string;
-	title: string;
-	description: string;
-	image: string;
-}
-
-const collections: Collection[] = [
-	{
-		season: "Summer 2020",
-		title: "New Collection",
-		description:
-			"We know how large objects will act, but things on a small scale.",
-		image: productSlide1,
-	},
-	{
-		season: "Autumn 2020",
-		title: "Cozy Essentials",
-		description: "Discover our warm and stylish pieces for the cooler months.",
-		image: productSlide1,
-	},
-	{
-		season: "Winter 2021",
-		title: "Frosty Favorites",
-		description: "Stay chic and warm with our latest winter collection.",
-		image: productSlide1,
-	},
-];
-
+/** Editorial split hero: warm serif statement + a single strong lifestyle image. */
 const NewCollection: React.FC = () => {
 	return (
-		<div className="flex justify-center items-center w-full">
-			<Carousel className="w-full max-w-[95%]  ">
-				<CarouselContent>
-					{collections.map((collection, index) => (
-						<CarouselItem key={index}>
-							<Card className="border-none">
-								<CardContent className="p-0">
-									<div className="relative h-screen max-h-[80%] flex items-center justify-center text-white">
-										<div className="absolute inset-0 z-0">
-											<img
-												src={collection.image}
-												alt={collection.title}
-												className="w-full h-full object-cover"
-											/>
-										</div>
+		<section className="border-b border-border bg-secondary">
+			<Container className="grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-24">
+				<div className="max-w-xl">
+					<p className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+						New season · Considered essentials
+					</p>
+					<h1 className="text-4xl leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
+						Considered pieces for a warmer everyday
+					</h1>
+					<p className="mt-6 max-w-md text-lg text-muted-foreground">
+						Softly structured knitwear, honest materials and quiet colour — made
+						in small batches to keep and wear for years, not seasons.
+					</p>
+					<div className="mt-8 flex flex-wrap items-center gap-3">
+						<Button asChild size="lg">
+							<Link to="/shop" search={{}}>
+								Shop the collection
+							</Link>
+						</Button>
+						<Button asChild variant="link" size="lg">
+							<Link to="/about">Our story</Link>
+						</Button>
+					</div>
+				</div>
 
-										<div className="relative z-10 text-center">
-											<p className="text-sm uppercase tracking-wider mb-2">
-												{collection.season}
-											</p>
-											<h1 className="text-5xl font-bold uppercase mb-4">
-												{collection.title}
-											</h1>
-											<p className="text-lg mb-8">{collection.description}</p>
-											<button className="bg-[#2DC071] text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-colors duration-300">
-												Shop Now
-											</button>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</CarouselItem>
-					))}
-				</CarouselContent>
-
-				<CarouselPrevious className="absolute left-5 top-1/2 transform -translate-y-1/2 text-2xl bg-white/10 hover:bg-white/20">
-					<ChevronLeft className="h-6 w-6 text-white" />
-				</CarouselPrevious>
-				<CarouselNext className="absolute right-5 top-1/2 transform -translate-y-1/2 text-2xl bg-white/10 hover:bg-white/20">
-					<ChevronRight className="h-6 w-6 text-white" />
-				</CarouselNext>
-			</Carousel>
-		</div>
+				<div className="relative">
+					<img
+						src={heroImage}
+						alt="Two people in soft-toned scarves against a warm backdrop"
+						className="aspect-[4/5] w-full rounded-lg object-cover shadow-sm"
+					/>
+				</div>
+			</Container>
+		</section>
 	);
 };
 

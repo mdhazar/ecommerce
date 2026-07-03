@@ -19,7 +19,7 @@ describe("Button", () => {
 		);
 		const button = screen.getByRole("button", { name: "Delete" });
 		expect(button).toHaveClass("bg-destructive");
-		expect(button).toHaveClass("h-11");
+		expect(button).toHaveClass("h-12");
 	});
 
 	it("fires onClick when pressed", async () => {

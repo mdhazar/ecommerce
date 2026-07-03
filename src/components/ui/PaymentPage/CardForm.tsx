@@ -2,29 +2,38 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type React from "react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { cardSchema } from "@/schemas/card";
-import type { CardFormData } from "../../../types/card";
+import { Button } from "@/components/ui/common";
+import { type CardFormData, cardSchema } from "@/schemas/card";
 import CardFormInputs from "../../ui/forms/CardFormInputs";
 
 interface CardFormProps {
 	onSubmit: (data: CardFormData) => void;
 	initialData?: CardFormData | null;
 	onCancel: () => void;
+	isSubmitting?: boolean;
 }
 
 const CardForm: React.FC<CardFormProps> = ({
 	onSubmit,
 	initialData = null,
 	onCancel,
+	isSubmitting = false,
 }) => {
 	const {
 		register,
 		handleSubmit,
 		reset,
+		setValue,
 		formState: { errors },
 	} = useForm<CardFormData>({
 		resolver: zodResolver(cardSchema),
-		defaultValues: initialData || undefined,
+		defaultValues: initialData ?? {
+			card_no: "",
+			name_on_card: "",
+			expire_month: "",
+			expire_year: "",
+			cvv: "",
+		},
 	});
 
 	useEffect(() => {
@@ -37,23 +46,21 @@ const CardForm: React.FC<CardFormProps> = ({
 	const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-			<CardFormInputs register={register} errors={errors} years={years} />
+		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+			<CardFormInputs
+				register={register}
+				errors={errors}
+				setValue={setValue}
+				years={years}
+			/>
 
-			<div className="flex justify-end space-x-3 mt-6">
-				<button
-					type="button"
-					onClick={onCancel}
-					className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-				>
+			<div className="flex justify-end gap-3">
+				<Button type="button" variant="outline" onClick={onCancel}>
 					Cancel
-				</button>
-				<button
-					type="submit"
-					className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-				>
-					{initialData ? "Update Card" : "Add Card"}
-				</button>
+				</Button>
+				<Button type="submit" disabled={isSubmitting}>
+					{initialData ? "Update card" : "Save card"}
+				</Button>
 			</div>
 		</form>
 	);

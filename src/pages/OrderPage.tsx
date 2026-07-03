@@ -1,16 +1,11 @@
 import type React from "react";
-import Footer from "../layouts/Footer";
-import Navbar from "../layouts/Navbar";
-import OrderPageContent from "../layouts/OrderPageContent";
+import OrderPageContent from "@/layouts/OrderPageContent";
+import SiteLayout from "@/layouts/SiteLayout";
 
-const OrderPage: React.FC = () => {
-	return (
-		<div>
-			<Navbar />
-			<OrderPageContent />
-			<Footer />
-		</div>
-	);
-};
+const OrderPage: React.FC = () => (
+	<SiteLayout>
+		<OrderPageContent />
+	</SiteLayout>
+);
 
 export default OrderPage;

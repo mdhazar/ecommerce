@@ -1,149 +1,129 @@
+import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import type React from "react";
+import { useId, useState } from "react";
+import { toast } from "react-toastify";
+import { Brand } from "@/components/ui/common/Brand";
+import { Button } from "@/components/ui/common/Button";
+import { Input } from "@/components/ui/common/Input";
+
+const COLUMNS: { heading: string; links: { label: string; to: string }[] }[] = [
+	{
+		heading: "Shop",
+		links: [
+			{ label: "All products", to: "/shop" },
+			{ label: "Women", to: "/shop" },
+			{ label: "Men", to: "/shop" },
+			{ label: "Wishlist", to: "/wishlist" },
+		],
+	},
+	{
+		heading: "Company",
+		links: [
+			{ label: "About us", to: "/about" },
+			{ label: "The team", to: "/team" },
+			{ label: "Journal", to: "/blog" },
+			{ label: "Contact", to: "/contact" },
+		],
+	},
+	{
+		heading: "Support",
+		links: [
+			{ label: "Order history", to: "/orders" },
+			{ label: "Shipping & returns", to: "/contact" },
+			{ label: "Track your order", to: "/orders" },
+			{ label: "Help", to: "/contact" },
+		],
+	},
+];
+
+const SOCIALS = [
+	{ label: "Instagram", href: "https://instagram.com", Icon: Instagram },
+	{ label: "Facebook", href: "https://facebook.com", Icon: Facebook },
+	{ label: "Twitter", href: "https://twitter.com", Icon: Twitter },
+];
 
 const Footer: React.FC = () => {
+	const emailId = useId();
+	const [email, setEmail] = useState("");
+
+	const handleSubscribe = (event: React.FormEvent) => {
+		event.preventDefault();
+		if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+			toast.error("Please enter a valid email address.");
+			return;
+		}
+		toast.success("Thanks for subscribing — welcome to North & Grove.");
+		setEmail("");
+	};
+
 	return (
-		<footer className="bg-white">
-			<div>
-				<div className="container bg-[#FAFAFA] flex flex-col md:flex-row justify-between items-center py-6 mb-8">
-					<h1 className="text-3xl font-bold mb-4 md:mb-0">Bandage</h1>
-					<div className="flex gap-4">
-						<a href="#" className="text-[#23A6F0]">
-							<Facebook />
-						</a>
-						<a href="#" className="text-[#23A6F0]">
-							<Instagram />
-						</a>
-						<a href="#" className="text-[#23A6F0]">
-							<Twitter />
-						</a>
-					</div>
-				</div>
-
-				<div className="container flex flex-wrap justify-between gap-8 mb-8">
-					<div>
-						<h2 className="text-lg mb-4">Company Info</h2>
-						<ul className="space-y-2">
-							<li>
-								<a href="#" className="text-[#737373]">
-									About Us
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Carrier
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									We are hiring
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Blog
-								</a>
-							</li>
-						</ul>
-					</div>
-
-					<div>
-						<h2 className="text-lg mb-4">Legal</h2>
-						<ul className="space-y-2">
-							<li>
-								<a href="#" className="text-[#737373]">
-									Privacy Policy
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Terms of Service
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									We are hiring
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Blog
-								</a>
-							</li>
-						</ul>
-					</div>
-
-					<div>
-						<h2 className="text-lg mb-4">Features</h2>
-						<ul className="space-y-2">
-							<li>
-								<a href="#" className="text-[#737373]">
-									Business Marketing
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									User Analytic
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Live Chat
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Unlimited Support
-								</a>
-							</li>
-						</ul>
-					</div>
-
-					<div>
-						<h2 className="text-lg mb-4">Resources</h2>
-						<ul className="space-y-2">
-							<li>
-								<a href="#" className="text-[#737373]">
-									iOS & Android
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Watch a Demo
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									Customers
-								</a>
-							</li>
-							<li>
-								<a href="#" className="text-[#737373]">
-									API
-								</a>
-							</li>
-						</ul>
-					</div>
-					<div className="bg-white mb-8">
-						<h2 className="text-lg mb-4">Get In Touch</h2>
-						<form className="flex space-x-2">
-							<input
-								type="email"
-								className="grow p-2 border border-[#737373] rounded-md"
-								placeholder="Your Email"
-							/>
-							<button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-								Subscribe
-							</button>
-						</form>
-						<p className="text-sm text-[#737373] mt-2">
-							Lore imp sum dolor Amit
+		<footer className="mt-auto border-t border-border bg-card">
+			<div className="mx-auto max-w-7xl px-4 py-14 md:px-8">
+				<div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+					<div className="max-w-sm">
+						<Brand />
+						<p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+							Considered clothing and homeware made in small batches — designed
+							to be lived in and last.
 						</p>
+						<form
+							onSubmit={handleSubscribe}
+							className="mt-6 flex max-w-sm gap-2"
+						>
+							<label htmlFor={emailId} className="sr-only">
+								Email address
+							</label>
+							<Input
+								id={emailId}
+								type="email"
+								value={email}
+								onChange={(event) => setEmail(event.target.value)}
+								placeholder="Your email"
+							/>
+							<Button type="submit">Subscribe</Button>
+						</form>
 					</div>
+
+					{COLUMNS.map((column) => (
+						<div key={column.heading}>
+							<h2 className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-foreground">
+								{column.heading}
+							</h2>
+							<ul className="mt-4 space-y-2.5">
+								{column.links.map((link) => (
+									<li key={link.label}>
+										<Link
+											to={link.to}
+											className="text-sm text-muted-foreground transition-colors hover:text-primary"
+										>
+											{link.label}
+										</Link>
+									</li>
+								))}
+							</ul>
+						</div>
+					))}
 				</div>
 
-				<div className="px-16 text-[#737373] text-sm py-6 bg-[#FAFAFA]">
-					<p>Made With Love By Finland All Right Reserved</p>
+				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 sm:flex-row">
+					<p className="text-xs text-muted-foreground">
+						© {2026} North &amp; Grove. All rights reserved.
+					</p>
+					<div className="flex items-center gap-3">
+						{SOCIALS.map(({ label, href, Icon }) => (
+							<a
+								key={label}
+								href={href}
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label={label}
+								className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+							>
+								<Icon size={17} />
+							</a>
+						))}
+					</div>
 				</div>
 			</div>
 		</footer>

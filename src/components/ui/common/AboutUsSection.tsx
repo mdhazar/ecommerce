@@ -1,35 +1,61 @@
+import { Link } from "@tanstack/react-router";
 import type React from "react";
-import about from "../../../assets/about1.png";
+import roomImage from "@/assets/roomImage.png";
+import { Button, Container, Section } from "@/components/ui/common";
+import { onImageError } from "@/lib/images";
 
-const AboutUsSection1: React.FC = () => {
+/**
+ * "Our story" editorial block for the About page: a considered image paired
+ * with the North & Grove founding story and a real call to action.
+ */
+const AboutUsSection: React.FC = () => {
 	return (
-		<section className="flex flex-col lg:flex-row items-center min-h-screen bg-[#2A7CC7] text-white">
-			{/* Left Side - Text */}
-			<div className="w-full lg:w-1/2 flex flex-col items-center px-4 lg:px-8 py-8 lg:py-0 text-center">
-				<h3 className="text-sm font-semibold uppercase tracking-wide mb-2">
-					Work With Us
-				</h3>
-				<h1 className="text-2xl font-bold mb-4">
-					Now Let's <br /> grow Yours
-				</h1>
-				<p className="text-base max-w-md mb-6">
-					The gradual accumulation of information about atomic and small-scale
-					behavior during the first quarter of the 20th
-				</p>
-				<button className="px-6 py-2 border border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
-					Button
-				</button>
-			</div>
+		<Section className="bg-card">
+			<Container>
+				<div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+					<div className="overflow-hidden rounded-2xl border border-border">
+						<img
+							src={roomImage}
+							alt="A North & Grove piece styled in a calm, sunlit room"
+							onError={onImageError}
+							className="h-full w-full object-cover"
+						/>
+					</div>
 
-			<div className="w-full lg:w-1/2 hidden lg:flex">
-				<img
-					src={about}
-					alt="About Us"
-					className="object-contain max-h-[500px] w-full"
-				/>
-			</div>
-		</section>
+					<div className="flex flex-col items-start">
+						<p className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+							Our story
+						</p>
+						<h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+							Made in small batches, meant to last for years
+						</h2>
+						<div className="mt-5 space-y-4 text-muted-foreground">
+							<p>
+								North &amp; Grove began in a quiet workshop with a simple
+								frustration: too much of what we owned was designed to be
+								replaced. We wanted the opposite — a small, considered wardrobe
+								of pieces that only look better with wear.
+							</p>
+							<p>
+								So we work slowly. Every style is cut in limited runs from
+								natural fibres, sewn by makers we know by name, and finished by
+								hand. Nothing is rushed to hit a trend, and nothing leaves the
+								studio until it feels genuinely worth keeping.
+							</p>
+						</div>
+						<Button asChild size="lg" className="mt-8">
+							<Link
+								to="/shop"
+								search={{ gender: undefined, category: undefined }}
+							>
+								Explore the collection
+							</Link>
+						</Button>
+					</div>
+				</div>
+			</Container>
+		</Section>
 	);
 };
 
-export default AboutUsSection1;
+export default AboutUsSection;

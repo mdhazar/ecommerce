@@ -1,17 +1,34 @@
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import type React from "react";
+import { Brand } from "@/components/ui/common/Brand";
+import { Button } from "@/components/ui/common/Button";
 
 const DefaultCatchBoundary: React.FC<ErrorComponentProps> = ({ error }) => (
-	<div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
-		<h1 className="text-4xl font-bold text-[#252B42]">Something went wrong</h1>
-		<p className="text-red-500 max-w-lg break-words">{error.message}</p>
-		<Link
-			to="/"
-			className="bg-[#23A6F0] text-white px-6 py-3 rounded-lg hover:bg-[#1a8dd3] transition-colors"
-		>
-			Back to Home
-		</Link>
+	<div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-4 text-center">
+		<Brand />
+		<div className="space-y-2">
+			<h1 className="text-3xl font-semibold tracking-tight">
+				Something went wrong
+			</h1>
+			<p className="max-w-lg text-muted-foreground">
+				We hit an unexpected snag. Try refreshing, or head back home while we
+				sort it out.
+			</p>
+		</div>
+		{error?.message ? (
+			<p className="max-w-lg break-words rounded-md border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+				{error.message}
+			</p>
+		) : null}
+		<div className="flex flex-wrap items-center justify-center gap-3">
+			<Button type="button" size="lg" onClick={() => window.location.reload()}>
+				Reload page
+			</Button>
+			<Button asChild variant="outline" size="lg">
+				<Link to="/">Back to home</Link>
+			</Button>
+		</div>
 	</div>
 );
 

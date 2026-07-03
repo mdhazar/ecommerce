@@ -8,6 +8,7 @@ import { Button } from "./Button";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>[0];
+type CarouselPlugin = Parameters<typeof useEmblaCarousel>[1];
 
 interface CarouselContextProps {
 	carouselRef: ReturnType<typeof useEmblaCarousel>[0];
@@ -36,7 +37,7 @@ interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
 	orientation?: "horizontal" | "vertical";
 	opts?: UseCarouselParameters;
 	setApi?: (api: CarouselApi) => void;
-	plugins?: any[];
+	plugins?: CarouselPlugin;
 }
 
 const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
@@ -128,6 +129,7 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
 					canScrollNext,
 				}}
 			>
+				{/* biome-ignore lint/a11y/useSemanticElements: carousel container implements the WAI-ARIA carousel pattern (role="region" + aria-roledescription) */}
 				<div
 					ref={ref}
 					onKeyDownCapture={handleKeyDown}
@@ -174,6 +176,7 @@ const CarouselItem = React.forwardRef<HTMLDivElement, CarouselItemProps>(
 		const { orientation } = useCarousel();
 
 		return (
+			// biome-ignore lint/a11y/useSemanticElements: carousel slide implements the WAI-ARIA carousel pattern (role="group" + aria-roledescription)
 			<div
 				ref={ref}
 				role="group"
