@@ -1,10 +1,5 @@
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import type React from "react";
-import {
-	FaFacebookF,
-	FaInstagram,
-	FaLinkedin,
-	FaTwitter,
-} from "react-icons/fa";
 
 const TeamSection4: React.FC = () => {
 	return (
@@ -28,28 +23,28 @@ const TeamSection4: React.FC = () => {
 					aria-label="Twitter"
 					className="hover:text-blue-500 text-[#55ACEE]"
 				>
-					<FaTwitter size={24} />
+					<Twitter size={24} />
 				</a>
 				<a
 					href="#"
 					aria-label="Facebook"
 					className="hover:text-blue-600 text-[#395185]"
 				>
-					<FaFacebookF size={24} />
+					<Facebook size={24} />
 				</a>
 				<a
 					href="#"
 					aria-label="Instagram"
 					className="hover:text-pink-500 text-black"
 				>
-					<FaInstagram size={24} />
+					<Instagram size={24} />
 				</a>
 				<a
 					href="#"
 					aria-label="LinkedIn"
 					className="hover:text-blue-500 text-[#0A66C2]"
 				>
-					<FaLinkedin size={24} />
+					<Linkedin size={24} />
 				</a>
 			</div>
 		</div>

@@ -1,17 +1,12 @@
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import type React from "react";
-import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuthStore } from "@/stores/auth-store";
+import { useCartStore } from "@/stores/cart-store";
 import Footer from "../../../layouts/Footer";
 import Header from "../../../layouts/Header";
 import Navbar from "../../../layouts/Navbar";
-import {
-	removeFromCart,
-	toggleCartItem,
-	updateCartItem,
-} from "../../../redux/actions/shoppingCartActions";
-import type { AppDispatch, RootState } from "../../../redux/store";
 
 interface Product {
 	id: number;
@@ -32,10 +27,12 @@ interface User {
 }
 
 const ShoppingCartPage: React.FC = () => {
-	const cart = useSelector((state: RootState) => state.shoppingCart.cart);
-	const user = useSelector((state: RootState) => state.client.user);
-	const dispatch = useDispatch<AppDispatch>();
-	const history = useHistory();
+	const cart = useCartStore((state) => state.cart);
+	const user = useAuthStore((state) => state.user);
+	const removeFromCart = useCartStore((state) => state.removeFromCart);
+	const toggleCartItem = useCartStore((state) => state.toggleCartItem);
+	const updateCartItem = useCartStore((state) => state.updateCartItem);
+	const navigate = useNavigate();
 
 	const handleQuantityChange = (
 		productId: number,
@@ -45,32 +42,31 @@ const ShoppingCartPage: React.FC = () => {
 		const newCount = currentCount + change;
 		if (newCount < 1) return;
 
-		const cartItem = cart.find(
-			(item: CartItem) => item.product.id === productId,
-		);
+		const cartItem = cart.find((item) => item.product.id === productId);
+		if (!cartItem) return;
 		if (newCount > cartItem.product.stock) {
 			toast.error("Cannot exceed available stock!");
 			return;
 		}
 
-		dispatch(updateCartItem(productId, newCount));
+		updateCartItem(productId, newCount);
 	};
 
 	const handleRemove = (productId: number): void => {
-		dispatch(removeFromCart(productId));
+		removeFromCart(productId);
 	};
 
 	const handleToggleCheck = (productId: number): void => {
-		dispatch(toggleCartItem(productId));
+		toggleCartItem(productId);
 	};
 
 	const handleCreateOrder = (): void => {
 		if (!user || !Object.keys(user).length) {
-			history.push("/login", { from: "/order" });
+			navigate({ to: "/login", search: { redirect: "/order" } });
 			return;
 		}
 
-		history.push("/order");
+		navigate({ to: "/order" });
 	};
 
 	const calculateSubtotal = (): number => {
@@ -186,7 +182,7 @@ const ShoppingCartPage: React.FC = () => {
 																disabled={item.count <= 1}
 																className="p-1.5 rounded-md hover:bg-white disabled:opacity-50 transition-colors"
 															>
-																<FaMinus size={12} />
+																<Minus size={12} />
 															</button>
 															<span className="w-12 text-center font-medium">
 																{item.count}
@@ -202,7 +198,7 @@ const ShoppingCartPage: React.FC = () => {
 																disabled={item.count >= item.product.stock}
 																className="p-1.5 rounded-md hover:bg-white disabled:opacity-50 transition-colors"
 															>
-																<FaPlus size={12} />
+																<Plus size={12} />
 															</button>
 														</div>
 													</div>
@@ -216,7 +212,7 @@ const ShoppingCartPage: React.FC = () => {
 															onClick={() => handleRemove(item.product.id)}
 															className="text-red-500 hover:text-red-700 p-2 rounded-md hover:bg-red-50 transition-colors"
 														>
-															<FaTrash />
+															<Trash2 />
 														</button>
 													</div>
 												</div>

@@ -1,10 +1,13 @@
 # E-commerce Web Application
 
-This is a full-stack e-commerce web application built with React, Redux, Tailwind CSS, and Node.js. It provides a seamless shopping experience for users, allowing them to browse products, add items to the cart, place orders, and manage their account.
+A modern e-commerce front end built with **TanStack Start** (SPA mode), React 19,
+TanStack Query, Zustand, and Tailwind CSS v4. It lets users browse products,
+filter by category, manage a cart, authenticate, and place orders against an
+external REST API.
 
 ## Note
 
-You can use public users below ( Password: 123456 )
+You can use the public demo users below (Password: `123456`):
 
 - <customer@commerce.com>
 - <store@commerce.com>
@@ -12,42 +15,66 @@ You can use public users below ( Password: 123456 )
 
 ## Features
 
-- User registration and authentication
-- Product browsing and search functionality
-- Product categories and filtering
-- Shopping cart management
-- Order placement and payment processing
-- User profile management
+- User registration and authentication (token-based)
+- Product browsing, category filtering, and search
+- Shopping cart with automatic persistence
+- Protected order & payment flow
 - Address and payment card management
-- Admin dashboard for managing products, orders, and users
-- Responsive design for optimal viewing on different devices
+- Responsive design
 
-## Technologies Used
+## Tech Stack
 
-### Frontend
+### Framework & routing
 
-- React
-- Redux (with Redux Thunk)
-- React Router DOM
-- Tailwind CSS
-- Axios
-- React Hook Form
-- React Icons
-- React Toastify
+- **TanStack Start** in SPA mode (`spa.enabled`) — type-safe file-based routing,
+  loaders, and server functions available on demand, without per-request SSR.
+- **TanStack Router** with `beforeLoad` guards for protected routes.
 
-### UI Components
+### State & data
 
-- Shadcn/ui components
-- Lucide React icons
-- Embla Carousel
+- **TanStack Query** — all server data (products, categories, orders, auth verify).
+- **Zustand** — client state (cart with `persist`, auth user, shop filters).
+- **Axios** — HTTP transport with a request interceptor that attaches the auth token.
 
-## API Integration
+### UI & forms
 
-The application integrates with a RESTful API for:
+- **Tailwind CSS v4** via the `@tailwindcss/vite` plugin with CSS-first `@theme`
+  configuration (see `src/index.css`).
+- **shadcn/ui** primitives (Radix Slot, `class-variance-authority`, `clsx`, `tailwind-merge`).
+- **lucide-react** icons, **Embla** carousel, **react-toastify** notifications.
+- **react-hook-form** + **zod** (via `@hookform/resolvers`) for typed, validated forms.
 
-- User authentication
-- Product management
-- Order processing
-- Cart management
-- Address management
-- Payment processing
+### Tooling
+
+- **Vite 7**, **TypeScript 6**, **Biome** (lint + format), **Vitest** + Testing Library.
+
+## Getting started
+
+```bash
+npm install
+cp .env.example .env   # set VITE_API_URL if different
+npm run dev            # http://localhost:3000
+```
+
+## Scripts
+
+| Script              | Description                                  |
+| ------------------- | -------------------------------------------- |
+| `npm run dev`       | Start the dev server                         |
+| `npm run build`     | Production build (Nitro output in `.output`) |
+| `npm run preview`   | Preview the production build                 |
+| `npm run typecheck` | `tsc --noEmit`                               |
+| `npm run test`      | Run the Vitest suite                         |
+| `npm run lint`      | Format + lint with Biome                     |
+
+## Configuration
+
+- **API base URL**: set `VITE_API_URL` (defaults to the hosted demo API).
+- **Routing**: routes live in `src/routes/`. The route tree
+  (`src/routeTree.gen.ts`) is generated automatically on `dev`/`build`.
+
+## Deployment
+
+The app builds to a Nitro server in `.output/`. On Vercel, Nitro auto-detects the
+platform and emits Build Output API artifacts — no `vercel.json` is required. Set
+`VITE_API_URL` as a project environment variable.

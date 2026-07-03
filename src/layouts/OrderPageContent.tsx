@@ -1,11 +1,12 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "@/api/api";
-import { setAddress } from "@/redux/actions/shoppingCartActions";
+import { type AddressFormData, addressSchema } from "@/schemas/address";
+import { useCartStore } from "@/stores/cart-store";
 
 interface Address {
 	id?: number;
@@ -20,7 +21,7 @@ interface Address {
 }
 
 interface AddressFormProps {
-	onSubmit: (data: Address) => void;
+	onSubmit: (data: AddressFormData) => void;
 	initialData?: Address | null;
 	onCancel: () => void;
 }
@@ -35,7 +36,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
 		handleSubmit,
 		reset,
 		formState: { errors },
-	} = useForm<Address>({
+	} = useForm<AddressFormData>({
+		resolver: zodResolver(addressSchema),
 		defaultValues: initialData || undefined,
 	});
 
@@ -65,7 +67,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 					Address Title
 				</label>
 				<input
-					{...register("title", { required: "Address title is required" })}
+					{...register("title")}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
 				{errors.title && (
@@ -79,7 +81,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 						Name
 					</label>
 					<input
-						{...register("name", { required: "Name is required" })}
+						{...register("name")}
 						className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 					/>
 					{errors.name && (
@@ -92,7 +94,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 						Surname
 					</label>
 					<input
-						{...register("surname", { required: "Surname is required" })}
+						{...register("surname")}
 						className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 					/>
 					{errors.surname && (
@@ -104,13 +106,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 			<div>
 				<label className="block text-sm font-medium text-gray-700">Phone</label>
 				<input
-					{...register("phone", {
-						required: "Phone is required",
-						pattern: {
-							value: /^05[0-9]{9}$/,
-							message: "Please enter a valid Turkish phone number",
-						},
-					})}
+					{...register("phone")}
 					placeholder="05XXXXXXXXX"
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
@@ -122,7 +118,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 			<div>
 				<label className="block text-sm font-medium text-gray-700">City</label>
 				<select
-					{...register("city", { required: "City is required" })}
+					{...register("city")}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				>
 					<option value="">Select a city</option>
@@ -142,7 +138,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 					District
 				</label>
 				<input
-					{...register("district", { required: "District is required" })}
+					{...register("district")}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
 				{errors.district && (
@@ -155,9 +151,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 					Neighborhood
 				</label>
 				<input
-					{...register("neighborhood", {
-						required: "Neighborhood is required",
-					})}
+					{...register("neighborhood")}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
 				{errors.neighborhood && (
@@ -170,7 +164,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 					Address Details
 				</label>
 				<textarea
-					{...register("address", { required: "Address details are required" })}
+					{...register("address")}
 					rows={3}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				/>
@@ -199,8 +193,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
 };
 
 const OrderPageContent: React.FC = () => {
-	const dispatch = useDispatch();
-	const history = useHistory();
+	const setAddress = useCartStore((state) => state.setAddress);
+	const navigate = useNavigate();
 	const [addresses, setAddresses] = useState<Address[]>([]);
 	const [showAddressForm, setShowAddressForm] = useState<boolean>(false);
 	const [editingAddress, setEditingAddress] = useState<Address | null>(null);
@@ -266,9 +260,9 @@ const OrderPageContent: React.FC = () => {
 			return;
 		}
 
-		dispatch(setAddress(selectedShippingAddress));
+		setAddress(selectedShippingAddress);
 
-		history.push("/payment");
+		navigate({ to: "/payment" });
 	};
 
 	return (

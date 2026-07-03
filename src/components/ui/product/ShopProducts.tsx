@@ -1,9 +1,8 @@
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import type { AppDispatch, RootState } from "../../../redux/store";
-import { fetchProducts } from "../../../redux/thunks/productThunks";
+import { useProducts } from "@/queries/products";
+import { useFilterStore } from "@/stores/filter-store";
 
 interface Product {
 	id: number;
@@ -16,12 +15,6 @@ interface Product {
 	category_id: number;
 }
 
-interface Category {
-	id: number;
-	code: string;
-	gender: string;
-}
-
 interface QueryParams {
 	offset: number;
 	limit: number;
@@ -31,61 +24,37 @@ interface QueryParams {
 }
 
 const ShopProducts: React.FC = () => {
-	const dispatch = useDispatch<AppDispatch>();
-	const history = useHistory();
+	const navigate = useNavigate();
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const productsPerPage = 12;
-	const { filter, sort } = useSelector((state: RootState) => state.filter);
-	const {
-		products = [],
-		total = 0,
-		loading,
-		error,
-	} = useSelector((state: RootState) => state.product);
-	const categories = useSelector(
-		(state: RootState) => state.category.categories,
-	);
+	const filter = useFilterStore((state) => state.filter);
+	const sort = useFilterStore((state) => state.sort);
+	const setTotal = useFilterStore((state) => state.setTotal);
 
-	const { gender, categoryId } = useParams<{
-		gender?: string;
-		categoryId?: string;
-	}>();
+	const { category: categoryId } = useSearch({ from: "/shop" });
 
+	const offset = (currentPage - 1) * productsPerPage;
+	const queryParams: QueryParams = {
+		offset,
+		limit: productsPerPage,
+		...(categoryId ? { category: categoryId } : {}),
+		...(sort ? { sort } : {}),
+		...(filter ? { filter } : {}),
+	};
+	const { data, isLoading: loading, error } = useProducts(queryParams);
+	const products = data?.products ?? [];
+	const total = data?.total ?? 0;
+
+	// Publish the result count so <ProductFilter /> can display it.
 	useEffect(() => {
-		const offset = (currentPage - 1) * productsPerPage;
-		const queryParams: QueryParams = {
-			offset,
-			limit: productsPerPage,
-		};
-		if (categoryId) {
-			queryParams.category = categoryId;
-		}
-		if (sort) {
-			queryParams.sort = sort;
-		}
-		if (filter) {
-			queryParams.filter = filter;
-		}
-		dispatch(fetchProducts(queryParams));
-	}, [dispatch, currentPage, categoryId, filter, sort]);
+		setTotal(total);
+	}, [total, setTotal]);
 
 	const handleProductClick = (product: Product): void => {
-		const productNameSlug = product.name
-			.toLowerCase()
-			.replace(/[^a-z0-9]+/g, "-")
-			.replace(/(^-|-$)/g, "");
-
-		const category = categories.find(
-			(cat: Category) => cat.id === product.category_id,
-		);
-		if (!category) return;
-
-		const categoryName = category.code.split(":")[1];
-		const productGender = category.gender;
-
-		history.push(
-			`/shop/${productGender}/${categoryName}/${category.id}/${productNameSlug}/${product.id}`,
-		);
+		navigate({
+			to: "/product/$productId",
+			params: { productId: String(product.id) },
+		});
 	};
 
 	useEffect(() => {
@@ -105,7 +74,7 @@ const ShopProducts: React.FC = () => {
 	if (error) {
 		return (
 			<div className="w-full h-96 flex items-center justify-center text-red-500">
-				Error: {error}
+				Error: {error.message}
 			</div>
 		);
 	}

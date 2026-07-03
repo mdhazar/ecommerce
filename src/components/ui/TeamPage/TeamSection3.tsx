@@ -1,5 +1,5 @@
+import { Facebook, Instagram, Twitter } from "lucide-react";
 import type React from "react";
-import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 
 const mockImage1 = "https://placehold.co/300x300";
 const mockImage2 = "https://placehold.co/300x300";
@@ -38,21 +38,21 @@ const TeamSection3: React.FC = () => {
 								aria-label="Facebook"
 								className="hover:text-blue-600 text-[#395185]"
 							>
-								<FaFacebookF />
+								<Facebook />
 							</a>
 							<a
 								href="#"
 								aria-label="Instagram"
 								className="hover:text-pink-500 text-black"
 							>
-								<FaInstagram />
+								<Instagram />
 							</a>
 							<a
 								href="#"
 								aria-label="Twitter"
 								className="hover:text-blue-500 text-[#55ACEE]"
 							>
-								<FaTwitter />
+								<Twitter />
 							</a>
 						</div>
 					</div>

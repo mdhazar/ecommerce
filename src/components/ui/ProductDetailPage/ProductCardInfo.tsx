@@ -1,28 +1,14 @@
+import { useParams } from "@tanstack/react-router";
 import type React from "react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import { useProduct } from "@/queries/products";
 
-interface Product {
-	id: number;
-	name: string;
-	description: string;
-	price: number;
-	rating: number;
-	sell_count: number;
-	stock: number;
-	category_id: number;
-	store_id: number;
-	images?: Array<{ url: string }>;
-}
-
-interface TabContent {
-	[key: string]: JSX.Element;
-}
+type TabContent = Record<string, React.ReactNode>;
 
 const ProductCardInfo: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<string>("description");
-	const { currentProduct } = useSelector((state: RootState) => state.product);
+	const { productId } = useParams({ from: "/product/$productId" });
+	const { data: currentProduct } = useProduct(productId);
 
 	if (!currentProduct) {
 		return null;

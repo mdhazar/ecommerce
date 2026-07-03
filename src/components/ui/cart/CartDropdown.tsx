@@ -1,13 +1,7 @@
+import { Link } from "@tanstack/react-router";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import type React from "react";
-import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import {
-	removeFromCart,
-	toggleCartItem,
-	updateCartItem,
-} from "../../../redux/actions/shoppingCartActions";
-import type { AppDispatch, RootState } from "../../../redux/store";
+import { useCartStore } from "@/stores/cart-store";
 
 interface Product {
 	id: number;
@@ -28,18 +22,20 @@ interface CartDropdownProps {
 }
 
 const CartDropdown: React.FC<CartDropdownProps> = ({ isOpen, onClose }) => {
-	const cart = useSelector((state: RootState) => state.shoppingCart.cart);
-	const dispatch = useDispatch<AppDispatch>();
+	const cart = useCartStore((state) => state.cart);
+	const removeFromCart = useCartStore((state) => state.removeFromCart);
+	const toggleCartItem = useCartStore((state) => state.toggleCartItem);
+	const updateCartItem = useCartStore((state) => state.updateCartItem);
 
 	if (!isOpen) return null;
 
 	const handleQuantityChange = (productId: number, newCount: number): void => {
 		if (newCount < 1) return;
-		dispatch(updateCartItem(productId, newCount));
+		updateCartItem(productId, newCount);
 	};
 
 	const handleRemove = (productId: number): void => {
-		dispatch(removeFromCart(productId));
+		removeFromCart(productId);
 	};
 
 	const calculateTotal = (): number => {
@@ -82,7 +78,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({ isOpen, onClose }) => {
 									<input
 										type="checkbox"
 										checked={item.checked}
-										onChange={() => dispatch(toggleCartItem(item.product.id))}
+										onChange={() => toggleCartItem(item.product.id)}
 										className="mr-4 h-4 w-4 text-[#23A6F0]"
 									/>
 
@@ -107,7 +103,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({ isOpen, onClose }) => {
 												}
 												className="p-1 text-gray-500 hover:text-gray-700"
 											>
-												<FaMinus size={12} />
+												<Minus size={12} />
 											</button>
 											<span className="mx-3 min-w-[20px] text-center">
 												{item.count}
@@ -118,7 +114,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({ isOpen, onClose }) => {
 												}
 												className="p-1 text-gray-500 hover:text-gray-700"
 											>
-												<FaPlus size={12} />
+												<Plus size={12} />
 											</button>
 										</div>
 									</div>
@@ -127,7 +123,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({ isOpen, onClose }) => {
 										onClick={() => handleRemove(item.product.id)}
 										className="ml-4 p-2 text-red-500 hover:text-red-700"
 									>
-										<FaTrash size={16} />
+										<Trash2 size={16} />
 									</button>
 								</div>
 							))}

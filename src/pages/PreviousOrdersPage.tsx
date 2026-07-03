@@ -1,8 +1,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import api from "../api/api";
+import { useState } from "react";
+import { useOrders } from "@/queries/orders";
 import Footer from "../layouts/Footer";
 import Navbar from "../layouts/Navbar";
 
@@ -53,27 +52,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ products }) => (
 );
 
 const PreviousOrdersPage: React.FC = () => {
-	const [orders, setOrders] = useState<Order[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
+	const { data: orders = [], isLoading: loading } = useOrders();
 	const [expandedOrders, setExpandedOrders] = useState<{
 		[key: number]: boolean;
 	}>({});
-
-	useEffect(() => {
-		fetchOrders();
-	}, []);
-
-	const fetchOrders = async (): Promise<void> => {
-		try {
-			const response = await api.get("/order");
-			setOrders(response.data);
-		} catch (error) {
-			console.error("Error fetching orders:", error);
-			toast.error("Failed to fetch orders");
-		} finally {
-			setLoading(false);
-		}
-	};
 
 	const toggleOrderDetails = (orderId: number): void => {
 		setExpandedOrders((prev) => ({

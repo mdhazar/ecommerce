@@ -1,23 +1,20 @@
-import { ChevronDown } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import {
+	ChevronDown,
+	ChevronUp,
+	Heart,
+	Menu,
+	Search,
+	ShoppingCart,
+	User,
+	X,
+} from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import {
-	FaBars,
-	FaChevronDown,
-	FaChevronUp,
-	FaHeart,
-	FaSearch,
-	FaShoppingCart,
-	FaTimes,
-	FaUser,
-} from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import api from "../api/api";
+import { useCategories } from "@/queries/categories";
+import { useAuthStore } from "@/stores/auth-store";
+import { useCartStore } from "@/stores/cart-store";
 import CartDropdown from "../components/ui/cart/CartDropdown";
-import { setUser } from "../redux/actions/clientActions";
-import type { RootState } from "../redux/store";
-import { fetchCategories } from "../redux/thunks/categoryThunks";
 
 interface Category {
 	id: number;
@@ -40,22 +37,16 @@ const Navbar: React.FC = () => {
 	const [menuOpen, setMenuOpen] = useState<boolean>(false);
 	const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 	const [cartOpen, setCartOpen] = useState<boolean>(false);
-	const user = useSelector((state: RootState) => state.client.user);
-	const categories = useSelector(
-		(state: RootState) => state.category.categories,
-	);
-	const cart = useSelector((state: RootState) => state.shoppingCart.cart);
-	const dispatch = useDispatch();
+	const user = useAuthStore((state) => state.user);
+	const logout = useAuthStore((state) => state.logout);
+	const { data: categories = [] } = useCategories();
+	const cart = useCartStore((state) => state.cart);
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 	const userMenuRef = useRef<HTMLDivElement>(null);
 	const cartItemsCount = cart.reduce(
 		(total: number, item: CartItem) => total + item.count,
 		0,
 	);
-
-	useEffect(() => {
-		dispatch(fetchCategories());
-	}, [dispatch]);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -86,9 +77,7 @@ const Navbar: React.FC = () => {
 	};
 
 	const handleLogout = (): void => {
-		dispatch(setUser({}));
-		localStorage.removeItem("token");
-		delete api.defaults.headers.common["Authorization"];
+		logout();
 		setMenuOpen(false);
 	};
 
@@ -117,7 +106,7 @@ const Navbar: React.FC = () => {
 							onClick={toggleDropdown}
 							className="text-gray-600 hover:text-gray-800 ml-2"
 						>
-							{dropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
+							{dropdownOpen ? <ChevronUp /> : <ChevronDown />}
 						</button>
 						{dropdownOpen && (
 							<div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 top-full">
@@ -129,7 +118,11 @@ const Navbar: React.FC = () => {
 											.map((category: Category) => (
 												<Link
 													key={category.id}
-													to={`/shop/k/${category.code.split(":")[1]}`}
+													to="/shop"
+													search={{
+														gender: "k",
+														category: category.code.split(":")[1],
+													}}
 													className="block px-2 mb-4 text-sm font-semibold text-[#737373] hover:bg-gray-100"
 													onClick={() => setDropdownOpen(false)}
 												>
@@ -144,7 +137,11 @@ const Navbar: React.FC = () => {
 											.map((category: Category) => (
 												<Link
 													key={category.id}
-													to={`/shop/e/${category.code.split(":")[1]}`}
+													to="/shop"
+													search={{
+														gender: "e",
+														category: category.code.split(":")[1],
+													}}
 													className="block px-2 mb-4 text-sm font-semibold text-[#737373] hover:bg-gray-100"
 													onClick={() => setDropdownOpen(false)}
 												>
@@ -160,9 +157,9 @@ const Navbar: React.FC = () => {
 					<Link to="/about" className="text-gray-600 hover:text-gray-800">
 						About
 					</Link>
-					<Link to="/blog" className="text-gray-600 hover:text-gray-800">
+					<a href="/blog" className="text-gray-600 hover:text-gray-800">
 						Blog
-					</Link>
+					</a>
 					<Link to="/contact" className="text-gray-600 hover:text-gray-800">
 						Contact
 					</Link>
@@ -173,9 +170,9 @@ const Navbar: React.FC = () => {
 
 				{/* Desktop Icons and User Section */}
 				<div className="hidden md:flex items-center space-x-4">
-					<Link to="/search" className="text-gray-600 hover:text-gray-800">
-						<FaSearch size={20} />
-					</Link>
+					<a href="/search" className="text-gray-600 hover:text-gray-800">
+						<Search size={20} />
+					</a>
 
 					{/* Cart Icon and Dropdown */}
 					<div className="relative cart-container">
@@ -183,7 +180,7 @@ const Navbar: React.FC = () => {
 							onClick={() => setCartOpen(!cartOpen)}
 							className="text-gray-600 hover:text-gray-800 relative p-2"
 						>
-							<FaShoppingCart size={20} />
+							<ShoppingCart size={20} />
 							{cartItemsCount > 0 && (
 								<span className="absolute -top-2 -right-2 bg-[#23A6F0] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
 									{cartItemsCount}
@@ -197,9 +194,9 @@ const Navbar: React.FC = () => {
 						/>
 					</div>
 
-					<Link to="/wishlist" className="text-gray-600 hover:text-gray-800">
-						<FaHeart size={20} />
-					</Link>
+					<a href="/wishlist" className="text-gray-600 hover:text-gray-800">
+						<Heart size={20} />
+					</a>
 
 					{/* User Section */}
 					{user && user.email ? (
@@ -248,7 +245,7 @@ const Navbar: React.FC = () => {
 								to="/login"
 								className="flex items-center text-gray-600 hover:text-gray-800"
 							>
-								<FaUser />
+								<User />
 								<span className="ml-1">Login</span>
 							</Link>
 							<Link to="/signup" className="text-gray-600 hover:text-gray-800">
@@ -265,7 +262,7 @@ const Navbar: React.FC = () => {
 							onClick={() => setCartOpen(!cartOpen)}
 							className="text-gray-600 hover:text-gray-800 relative p-2"
 						>
-							<FaShoppingCart size={20} />
+							<ShoppingCart size={20} />
 							{cartItemsCount > 0 && (
 								<span className="absolute -top-2 -right-2 bg-[#23A6F0] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
 									{cartItemsCount}
@@ -282,7 +279,7 @@ const Navbar: React.FC = () => {
 						onClick={toggleMenu}
 						className="text-gray-600 hover:text-gray-800"
 					>
-						{menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+						{menuOpen ? <X size={24} /> : <Menu size={24} />}
 					</button>
 				</div>
 			</div>
@@ -313,13 +310,13 @@ const Navbar: React.FC = () => {
 							>
 								About
 							</Link>
-							<Link
-								to="/blog"
+							<a
+								href="/blog"
 								className="text-gray-600 hover:text-gray-800"
 								onClick={toggleMenu}
 							>
 								Blog
-							</Link>
+							</a>
 							<Link
 								to="/contact"
 								className="text-gray-600 hover:text-gray-800"

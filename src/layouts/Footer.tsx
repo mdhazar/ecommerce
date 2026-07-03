@@ -1,5 +1,5 @@
+import { Facebook, Instagram, Twitter } from "lucide-react";
 import type React from "react";
-import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 
 const Footer: React.FC = () => {
 	return (
@@ -9,13 +9,13 @@ const Footer: React.FC = () => {
 					<h1 className="text-3xl font-bold mb-4 md:mb-0">Bandage</h1>
 					<div className="flex gap-4">
 						<a href="#" className="text-[#23A6F0]">
-							<FaFacebookF />
+							<Facebook />
 						</a>
 						<a href="#" className="text-[#23A6F0]">
-							<FaInstagram />
+							<Instagram />
 						</a>
 						<a href="#" className="text-[#23A6F0]">
-							<FaTwitter />
+							<Twitter />
 						</a>
 					</div>
 				</div>

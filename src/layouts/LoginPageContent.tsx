@@ -1,46 +1,31 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import type React from "react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { Link, useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { loginUser } from "@/redux/thunks/authThunks";
-
-interface LoginFormData {
-	email: string;
-	password: string;
-	rememberMe?: boolean;
-}
-
-interface LocationState {
-	from: {
-		pathname: string;
-	};
-}
+import { useLogin } from "@/queries/auth";
+import { type LoginFormData, loginSchema } from "@/schemas/auth";
 
 const LoginPageContent: React.FC = () => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<LoginFormData>();
-	const dispatch = useDispatch();
-	const history = useHistory();
-	const location = useLocation<LocationState>();
+	} = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
+	const navigate = useNavigate();
+	const { redirect } = useSearch({ from: "/login" });
+	const login = useLogin();
+	const isLoading = login.isPending;
 
-	const onSubmit = async (data: LoginFormData): Promise<void> => {
-		setIsLoading(true);
-		try {
-			await dispatch(loginUser(data, history, location));
-		} catch (error: any) {
-			console.error("Login error:", error);
-			toast.error(
-				error.response?.data?.message || "Login failed. Please try again.",
-			);
-		} finally {
-			setIsLoading(false);
-		}
+	const onSubmit = (data: LoginFormData): void => {
+		login.mutate(data, {
+			onSuccess: () => {
+				navigate({ to: redirect ?? "/", replace: true });
+			},
+			onError: () => {
+				toast.error("Login failed. Please check your credentials.");
+			},
+		});
 	};
 
 	const onError = (errors: any): void => {
@@ -58,9 +43,9 @@ const LoginPageContent: React.FC = () => {
 						<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
 							Sign in to your account
 						</h2>
-						{location.state?.from && (
+						{redirect && (
 							<p className="mt-2 text-center text-sm text-gray-600">
-								Please log in to continue to {location.state.from.pathname}
+								Please log in to continue to {redirect}
 							</p>
 						)}
 					</div>
@@ -84,13 +69,7 @@ const LoginPageContent: React.FC = () => {
 									className={`appearance-none relative block w-full px-3 py-2 border ${
 										errors.email ? "border-red-300" : "border-gray-300"
 									} placeholder-gray-500 text-gray-900 rounded-md focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-									{...register("email", {
-										required: "Email is required",
-										pattern: {
-											value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-											message: "Invalid email address",
-										},
-									})}
+									{...register("email")}
 								/>
 								{errors.email && (
 									<p className="mt-1 text-xs text-red-600">
@@ -113,13 +92,7 @@ const LoginPageContent: React.FC = () => {
 									className={`appearance-none relative block w-full px-3 py-2 border ${
 										errors.password ? "border-red-300" : "border-gray-300"
 									} placeholder-gray-500 text-gray-900 rounded-md focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-									{...register("password", {
-										required: "Password is required",
-										minLength: {
-											value: 6,
-											message: "Password must be at least 6 characters",
-										},
-									})}
+									{...register("password")}
 								/>
 								{errors.password && (
 									<p className="mt-1 text-xs text-red-600">
@@ -146,12 +119,13 @@ const LoginPageContent: React.FC = () => {
 							</div>
 
 							<div className="text-sm">
-								<Link
-									to="/forgot-password"
+								{/* No password-reset route yet; kept as a plain anchor. */}
+								<a
+									href="/forgot-password"
 									className="font-medium text-blue-600 hover:text-blue-500"
 								>
 									Forgot your password?
-								</Link>
+								</a>
 							</div>
 						</div>
 

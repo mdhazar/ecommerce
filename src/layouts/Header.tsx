@@ -1,12 +1,12 @@
-import type React from "react";
 import {
-	FaEnvelope,
-	FaFacebookF,
-	FaInstagram,
-	FaPhoneAlt,
-	FaTwitter,
-	FaYoutube,
-} from "react-icons/fa";
+	Facebook,
+	Instagram,
+	Mail,
+	Phone,
+	Twitter,
+	Youtube,
+} from "lucide-react";
+import type React from "react";
 
 const Header: React.FC = () => {
 	return (
@@ -15,11 +15,11 @@ const Header: React.FC = () => {
 				<div className="flex justify-between items-center p-4">
 					<div className="flex items-center space-x-4">
 						<div className="flex items-center space-x-2">
-							<FaPhoneAlt />
+							<Phone />
 							<span>(225) 555-0118</span>
 						</div>
 						<div className="flex items-center space-x-2">
-							<FaEnvelope />
+							<Mail />
 							<span>michelle.rivera@example.com</span>
 						</div>
 					</div>
@@ -28,10 +28,10 @@ const Header: React.FC = () => {
 					</div>
 					<div className="flex items-center space-x-4">
 						<span>Follow Us:</span>
-						<FaInstagram />
-						<FaYoutube />
-						<FaFacebookF />
-						<FaTwitter />
+						<Instagram />
+						<Youtube />
+						<Facebook />
+						<Twitter />
 					</div>
 				</div>
 			</div>

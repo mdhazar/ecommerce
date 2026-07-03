@@ -1,18 +1,5 @@
 import type React from "react";
-import { useSelector } from "react-redux";
-
-interface Product {
-	id: string;
-	name: string;
-	price: number;
-	images?: Array<{ url: string }>;
-}
-
-interface CartItem {
-	product: Product;
-	count: number;
-	checked: boolean;
-}
+import { useCartStore } from "@/stores/cart-store";
 
 interface OrderSummaryProps {
 	onButtonClick?: () => void;
@@ -27,9 +14,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 	buttonDisabled = false,
 	showSecurityBadges = true,
 }) => {
-	const cart = useSelector(
-		(state: { shoppingCart: { cart: CartItem[] } }) => state.shoppingCart.cart,
-	);
+	const cart = useCartStore((state) => state.cart);
 
 	const SHIPPING_FEE = 15;
 	const DISCOUNT_PERCENTAGE = 10;

@@ -25,13 +25,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
 				Card Number
 			</label>
 			<input
-				{...register("card_no", {
-					required: "Card number is required",
-					pattern: {
-						value: /^[0-9]{16}$/,
-						message: "Please enter a valid 16-digit card number",
-					},
-				})}
+				{...register("card_no")}
 				className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				placeholder="1234 1234 1234 1234"
 				maxLength={16}
@@ -46,7 +40,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
 				Name on Card
 			</label>
 			<input
-				{...register("name_on_card", { required: "Name is required" })}
+				{...register("name_on_card")}
 				className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 			/>
 			{errors.name_on_card && (
@@ -60,7 +54,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
 					Expiry Month
 				</label>
 				<select
-					{...register("expire_month", { required: "Month is required" })}
+					{...register("expire_month")}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				>
 					<option value="">Select Month</option>
@@ -80,7 +74,7 @@ const CardFormInputs: React.FC<CardFormInputsProps> = ({
 					Expiry Year
 				</label>
 				<select
-					{...register("expire_year", { required: "Year is required" })}
+					{...register("expire_year")}
 					className="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500"
 				>
 					<option value="">Select Year</option>

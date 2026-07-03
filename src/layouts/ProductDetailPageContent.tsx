@@ -1,51 +1,24 @@
+import { useParams, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import { addToCart } from "@/redux/actions/shoppingCartActions";
-import type { RootState } from "@/redux/store";
-import { fetchProduct } from "@/redux/thunks/productThunks";
-
-interface ProductImage {
-	url: string;
-}
-
-interface Product {
-	id: string;
-	name: string;
-	price: number;
-	description: string;
-	stock: number;
-	sell_count: number;
-	rating: number;
-	images: ProductImage[];
-}
-
-interface ProductState {
-	currentProduct: Product | null;
-	loading: boolean;
-	error: string | null;
-}
+import { useProduct } from "@/queries/products";
+import { useCartStore } from "@/stores/cart-store";
 
 const ProductDetailPageContent: React.FC = () => {
-	const { productId } = useParams<{ productId: string }>();
-	const dispatch = useDispatch();
-	const history = useHistory();
+	const { productId } = useParams({ from: "/product/$productId" });
+	const router = useRouter();
+	const addToCart = useCartStore((state) => state.addToCart);
 	const [quantity, setQuantity] = useState<number>(1);
-	const { currentProduct, loading, error } = useSelector(
-		(state: RootState) => state.product as ProductState,
-	);
-
-	useEffect(() => {
-		if (productId) {
-			dispatch(fetchProduct(productId));
-		}
-	}, [dispatch, productId]);
+	const {
+		data: currentProduct,
+		isLoading: loading,
+		error,
+	} = useProduct(productId);
 
 	const handleBack = (): void => {
-		history.goBack();
+		router.history.back();
 	};
 
 	const handleAddToCart = (): void => {
@@ -58,7 +31,7 @@ const ProductDetailPageContent: React.FC = () => {
 
 		// Add the selected quantity to cart
 		for (let i = 0; i < quantity; i++) {
-			dispatch(addToCart(currentProduct));
+			addToCart(currentProduct);
 		}
 
 		toast.success(`${currentProduct.name} added to cart!`);
@@ -75,7 +48,7 @@ const ProductDetailPageContent: React.FC = () => {
 	if (error) {
 		return (
 			<div className="w-full h-96 flex items-center justify-center text-red-500">
-				Error: {error}
+				Error: {error.message}
 			</div>
 		);
 	}

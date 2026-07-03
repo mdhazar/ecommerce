@@ -1,5 +1,5 @@
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import type React from "react";
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const ContactSection1: React.FC = () => {
 	return (
@@ -22,16 +22,16 @@ const ContactSection1: React.FC = () => {
 
 			<div className="flex space-x-6">
 				<a href="#" className="text-gray-400 hover:text-gray-600">
-					<FaTwitter size={30} />
+					<Twitter size={30} />
 				</a>
 				<a href="#" className="text-gray-400 hover:text-gray-600">
-					<FaFacebook size={30} />
+					<Facebook size={30} />
 				</a>
 				<a href="#" className="text-gray-400 hover:text-gray-600">
-					<FaInstagram size={30} />
+					<Instagram size={30} />
 				</a>
 				<a href="#" className="text-gray-400 hover:text-gray-600">
-					<FaLinkedin size={30} />
+					<Linkedin size={30} />
 				</a>
 			</div>
 		</div>

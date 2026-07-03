@@ -1,24 +1,15 @@
 import type React from "react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setFilterParams } from "../../../redux/actions/filterActions";
-import type { AppDispatch, RootState } from "../../../redux/store";
-
-interface FilterParams {
-	filter: string;
-	sort: string;
-}
+import { useFilterStore } from "@/stores/filter-store";
 
 const ProductFilter: React.FC = () => {
-	const dispatch = useDispatch<AppDispatch>();
+	const setFilterParams = useFilterStore((state) => state.setFilterParams);
+	const totalResults = useFilterStore((state) => state.total);
 	const [localFilter, setLocalFilter] = useState<string>("");
 	const [localSort, setLocalSort] = useState<string>("");
 
-	const totalResults =
-		useSelector((state: RootState) => state.product.total) || 0;
-
 	const handleFilterClick = (): void => {
-		dispatch(setFilterParams({ filter: localFilter, sort: localSort }));
+		setFilterParams({ filter: localFilter, sort: localSort });
 	};
 
 	return (

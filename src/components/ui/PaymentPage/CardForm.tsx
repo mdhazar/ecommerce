@@ -1,6 +1,8 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import type React from "react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { cardSchema } from "@/schemas/card";
 import type { CardFormData } from "../../../types/card";
 import CardFormInputs from "../../ui/forms/CardFormInputs";
 
@@ -21,6 +23,7 @@ const CardForm: React.FC<CardFormProps> = ({
 		reset,
 		formState: { errors },
 	} = useForm<CardFormData>({
+		resolver: zodResolver(cardSchema),
 		defaultValues: initialData || undefined,
 	});
 

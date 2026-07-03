@@ -279,7 +279,7 @@ const SignUpContent: React.FC = () => {
 								{...register("store_bank_account", {
 									required: true,
 									validate: (value) =>
-										isValidIBAN(value) || "Invalid IBAN address",
+										isValidIBAN(value ?? "") || "Invalid IBAN address",
 								})}
 								placeholder="TR..."
 								className="w-full px-3 py-2 border rounded"
